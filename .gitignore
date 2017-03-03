@@ -1,2 +1,6 @@
 /.settings
 /.project
+/hermes-core/.project
+/hermes-core/.settings
+/hermes-core/target
+/hermes-core/.classpath
