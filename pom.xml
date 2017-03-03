@@ -23,5 +23,11 @@
 	<modules>
 		<module>hermes-core</module>
 		<module>hermes-common</module>
+		<module>hermes-monitor-api</module>
+		<module>hermes-monitor-provider</module>
+		<module>hermes-config-api</module>
+		<module>hermes-config-biz</module>
+		<module>hermes-config-provider</module>
+		<module>hermes-config-web</module>
 	</modules>
 </project>
