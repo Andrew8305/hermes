@@ -20,4 +20,7 @@
 	</description>
 	
 	
+	<modules>
+		<module>hermes-core</module>
+	</modules>
 </project>
