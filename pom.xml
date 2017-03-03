@@ -22,5 +22,6 @@
 	
 	<modules>
 		<module>hermes-core</module>
+		<module>hermes-common</module>
 	</modules>
 </project>
