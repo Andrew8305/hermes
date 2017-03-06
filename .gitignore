@@ -32,3 +32,5 @@
 /hermes-monitor-provider/.project
 /hermes-monitor-provider/.settings
 /hermes-monitor-provider/target
+/hermes-config-provider/logs
+/hermes-monitor-provider/logs
