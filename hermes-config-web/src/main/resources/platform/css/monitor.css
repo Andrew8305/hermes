@@ -1,0 +1,92 @@
+@charset "utf-8";
+/* CSS Document */
+body{
+font:13px "microsoft yahei",Arial, Helvetica, sans-serif;
+color:#69696a;}
+.gzd_list{
+	margin:10px 0 0 8px;
+	padding:10px 0;
+	}
+.gzd_list select{
+	border:1px solid #d2d2d2;
+	padding:3px 0;
+	border-radius:3px;}
+.work{
+	border:1px solid #dfdfdf;
+	border-radius:5px;
+	overflow:hidden;}
+.work p{
+	background-color:#6bbaf7;
+	padding:10px;
+	font-size:14px;
+	color:#fff;
+	margin:0;
+	border-bottom:1px solid #dfdfdf;}
+.work p span{
+	margin-right:30px;}
+.work p span.pull-right{
+	margin-right:0;}
+.work p .btn_zk1,.work p .btn_zk{
+	font-size:18px;
+	font-weight:bold;
+	width:18px;
+	height:18px;
+	line-height:18px;
+	text-align:center;
+	cursor:pointer;}
+.work p .btn_zk{
+	-ms-transform: rotate(90deg);
+	-moz-transform: rotate(90deg);
+	-webkit-transform: rotate(90deg);
+	transform: rotate(90deg);}
+.work p .btn_zk1{
+	-ms-transform:rotate(-45deg);
+	-moz-transform:rotate(-45deg);
+	-webkit-transform:rotate(-45deg);
+	transform: rotate(-45deg);}
+.work table{
+	display:none;
+	width:48%;
+	text-align:center;
+	margin:15px auto;
+	border-radius:5px 5px 0 0;}
+.work table th{
+	text-align:center;
+	color:#333;
+	background-color:#e6e6e6;}
+.column{
+	background-color: #FFFFFF;
+    border: 1px solid #DDDDDD;
+    border-radius: 4px 4px 4px 4px;
+    margin: 10px 1%;
+	width:23%;
+    padding:10px;}
+.column p{
+	margin:0;
+	color:#333;
+	padding:2px 0;}
+.os_info{
+	font-weight:bold;
+	font-size:14px;
+	border-bottom:1px solid #dfdfdf;
+	padding:10px  0 10px 8px;}
+/*-----------tc_main-------------*/
+.tc_main .column p{
+	padding:5px 0;
+	border-bottom:1px dashed #dfdfdf;}
+.tc_main .column a{
+	display:block;
+	padding:5px;}
+.tc_main .column a:hover{
+	display:block;
+	padding:5px;
+	background-color:#e6e6e6;
+	text-decoration:none;}
+.no_main{
+	width:100%;
+	padding:100px 0;
+	margin:0 auto;
+	font-size:22px;
+	color:#ccc;
+	text-align:center;
+	font-weight:400;}
