@@ -63,7 +63,7 @@ public class SingleResourceTaskThread implements Runnable{
 					etlStep.doStep(inputETLResource, outputETLResource, stepLogCollector);
 				} catch (Exception e) {
 					e.printStackTrace();
-					String msg = "ETL步骤，步骤数为[" + etlStep.order() + "]运行失败：" + e.getMessage();
+					String msg = "ETL步骤，步骤数为[" + etlStep.order() + "]，数据源标识[" + inputETLResource.id() + "]运行失败：" + e.getMessage();
 					LOG.error(msg);
 					stepLogCollector.setResultDesc(msg);
 					stepLogCollector.setResult(false);
