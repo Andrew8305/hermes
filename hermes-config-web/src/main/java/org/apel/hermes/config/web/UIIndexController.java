@@ -51,6 +51,8 @@ public class UIIndexController {
 	
 	@RequestMapping("console")
 	public String console() throws Exception{
+		
+		System.out.println("----------");
 		return CONSOLE;
 	}
 
