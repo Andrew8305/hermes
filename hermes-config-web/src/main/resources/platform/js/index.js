@@ -12,7 +12,7 @@ $(function(){
 			return {
 				currentUserBaseInfo:{},
 				level2MenuName:"",
-				tabItems: []
+				tabItems: [{name:'数据源配置', selected:true, closeable:false, url:contextPath + "/dBConfigure/index"}]
 			};
 		},
 		methods:{
