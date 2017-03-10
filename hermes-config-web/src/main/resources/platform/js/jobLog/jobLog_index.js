@@ -62,7 +62,7 @@ $(function(){
 				}, 1000);
 			},
 			exp: function(){//导出
-				PlatformUI.exportGrid("list", "from etl_job_log");
+				PlatformUI.exportGrid("job_grid", "from etl_job_log");
 			},
 			resetForm: function(){
 				this.dialogFormVisible = false;
