@@ -70,6 +70,9 @@ color:#69696a;}
 	font-size:14px;
 	border-bottom:1px solid #dfdfdf;
 	padding:10px  0 10px 8px;}
+.os_title_red{
+	color:red
+}
 /*-----------tc_main-------------*/
 .tc_main .column p{
 	padding:5px 0;

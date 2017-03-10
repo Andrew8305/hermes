@@ -20,7 +20,7 @@ public class DataSource implements Serializable {
 	private Integer id;// 数据源ID
 
 	
-	private Integer seq;
+	private Integer seq; 
 	
 	
 	private String paramValue;
