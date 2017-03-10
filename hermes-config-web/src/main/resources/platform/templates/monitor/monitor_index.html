@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>实时监控</title>
+  ${jsContext}${appJs}${jquery}${bootstrap}${jqueryUI}${jqGrid}${vue}${ele}${pnotify}
+  <script type="text/javascript" src="${request.contextPath}/js/monitor/monitor_index.js"></script>
+	<link rel="stylesheet" href="${request.contextPath}/css/global.css">
+	<link rel="stylesheet" href="${request.contextPath}/css/monitor.css">
+</head>
+<body>
+	<div id="app">
+		<el-row>
+			<el-col :span="4">
+				<h5 class="tool-title">
+					挂载点监控
+				</h5>
+			</el-col>
+		</el-row>
+		
+		<div class="split-line"></div>
+		<!-- 没有挂载点 -->
+		<el-row v-loading="loading.monitorLoadingVisible">
+			<div class="tc_main" v-show="noMonitorVisible">
+				<div class="no_main">
+					<p><img src="${request.contextPath}/images/zw.png"/></p>
+					<p>暂无挂载点</p>
+				</div>
+			</div>
+			<div v-for="monitor in monitors" v-show="monitorVisible">
+				<div class="col-xs-3 column">
+					<a href="javascript:void(0);" @click="selectMonitor(monitor)" >
+						<p>ID：{{monitor.id}}</p>
+						<p>IP：{{monitor.ip}}</p>
+						<p>作业总数：{{monitor.jobNum}}</p>
+						<p>任务总数：{{monitor.taskNum}}</p>
+						<p>过程总数：{{monitor.stepNum}}</p>
+					</a>
+				</div>
+			</div>
+		</el-row>
+		<!-- 挂载点明细 -->
+		<el-dialog title="挂载点明细" size="large" v-model="monitorDetailVisible" lock-scroll>
+		         <div class="work">
+		         	<p  @click="showJobTable"><span class="pull-right btn_zk" v-bind:class="{btn_zk1:jobVisible}">+</span>
+		         		在线作业总个数：{{monitor.jobNum}}
+		         		在线任务总个数：{{monitor.taskNum}}
+		         		在线过程总个数：{{monitor.stepNum}}
+		         	</p>
+		         	
+		         </div>
+	         	<el-table :data="jobData" style="width: 100%" v-show="jobVisible" v-loading="loading.jobLoadingVisible">
+					<el-table-column prop="jobId" label="在线作业"> </el-table-column>
+					<el-table-column prop="tasks" label="在线任务数"> </el-table-column>
+					<el-table-column prop="steps" label="在线过程数"> </el-table-column>
+			    </el-table>
+		         <div class="os_main">
+		         	<p class="os_info">硬件信息</p>
+		         	<div id="div_cpuStatus" class="col-xs-3 column" v-loading="loading.cpuLoadingVisible">
+		         		<p v-for="cpu in cpuStatus"><span v-bind:class="{os_title_red:cpu.ishead}" >{{cpu.text}}</span></p>
+		         	</div>
+				    <div id="div_jvmStatus" class="col-xs-3 column" v-loading="loading.jvmLoadingVisible">
+				    	<p v-for="jvm in jvmStatus">{{jvm}}</p>
+				    </div>
+		            <div id="div_memoryStatus" class="col-xs-3 column" v-loading="loading.memoryLoadingVisible">
+		            	<p v-for="memory in memoryStatus">{{memory}}</p>
+		            </div>
+		            <div id="div_osStatus" class="col-xs-3 column" v-loading="loading.osLoadingVisible">
+		            	<p  v-for="os in osStatus">{{os}}</p>
+		            </div>
+		         </div><!--/os_main-->
+		</el-dialog>
+	</div>
+</body>
+</html>
