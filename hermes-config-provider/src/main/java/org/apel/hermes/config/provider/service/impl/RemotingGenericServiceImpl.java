@@ -31,7 +31,7 @@ public class RemotingGenericServiceImpl implements RemotingGenericService{
 	
 	@Override
 	public List<String> getTaskIds(String jobBizId) {
-		return taskService.findTaskIdsByJobId(jobBizId);
+		return null;
 	}
 
 	@Override
@@ -47,14 +47,14 @@ public class RemotingGenericServiceImpl implements RemotingGenericService{
 
 	@Override
 	public JobConfig getJobConfig(String jobBizId) {
-		Job job=jobService.findByJobBizId(jobBizId);
+		/*Job job=jobService.findByJobBizId(jobBizId);
 		if(job!=null){
 			JobConfig jobConfig=new JobConfig();
 			BeanUtils.copyNotNullProperties(job, jobConfig);
 			jobConfig.setId(job.getJobBizId());
 			jobConfig.setDesc(job.getDescription());
 			return jobConfig;
-		}
+		}*/
 		return null;
 	}
 	

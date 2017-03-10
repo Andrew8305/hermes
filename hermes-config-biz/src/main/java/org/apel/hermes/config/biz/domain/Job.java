@@ -1,36 +1,48 @@
 package org.apel.hermes.config.biz.domain;
 
+import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 
 @Entity
 @Table(name = "etl_job")
-public class Job {
+public class Job implements Serializable{
 
 	@Id
-	private String id;// 作业ID
-
+	private String id;
 	private Date createDate;
-	
-	// 输入源
-	private String  input;
+
 	// 作业名称
-	private String  name;
+	private String  jobName;
 	// 描述
 	private String  description;
-	// 执行时间
+
+	// 作业KEY
+	private String  jobKey;
+	// cron表达式
 	private String  schedule;
-	// 输出源
-	private String  output;
-	// 作业业务ID
-	private String  jobBizId;
+	
+	
+	@Transient
+	private List<String> inList;
+	
+	@Transient
+	private List<String> outList;
 
 	
+	public String getId() {
+		return id;
+	}
 
+	public void setId(String id) {
+		this.id = id;
+	}
 	
 	public Date getCreateDate() {
 		return createDate;
@@ -40,35 +52,24 @@ public class Job {
 		this.createDate = createDate;
 	}
 	
-	public String getInput() {
-		return input;
+	public String getJobName() {
+		return jobName;
 	}
-	public void setInput(String input) {
-		this.input = input;
+	public void setJobName(String jobName) {
+		this.jobName = jobName;
 	}
-	public String getName() {
-		return name;
+	
+	public String getJobKey() {
+		return jobKey;
 	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
+	public void setJobKey(String jobKey) {
+		this.jobKey = jobKey;
 	}
 	public String getSchedule() {
 		return schedule;
 	}
 	public void setSchedule(String schedule) {
 		this.schedule = schedule;
-	}
-	public String getOutput() {
-		return output;
-	}
-	public void setOutput(String output) {
-		this.output = output;
 	}
 
 	public String getDescription() {
@@ -78,14 +79,23 @@ public class Job {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
-	public String getJobBizId() {
-		return jobBizId;
+	public List<String> getInList() {
+		return inList;
 	}
 
-	public void setJobBizId(String jobBizId) {
-		this.jobBizId = jobBizId;
+	public void setInList(List<String> inList) {
+		this.inList = inList;
+	}
+
+	public List<String> getOutList() {
+		return outList;
+	}
+
+	public void setOutList(List<String> outList) {
+		this.outList = outList;
 	}
 
 	
+	
+
 }

@@ -1,89 +1,93 @@
 package org.apel.hermes.config.biz.service.impl;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
 
 import org.apel.gaia.infrastructure.impl.AbstractBizCommonService;
-import org.apel.gaia.persist.dao.CommonRepository;
-import org.apel.hermes.config.biz.dao.JobRepository;
-import org.apel.hermes.config.biz.dao.TaskRepository;
+import org.apel.gaia.util.BeanUtils;
+import org.apel.hermes.config.biz.domain.DBConfigure;
 import org.apel.hermes.config.biz.domain.Job;
+import org.apel.hermes.config.biz.domain.JobDBConfigure;
+import org.apel.hermes.config.biz.service.DBConfigureService;
+import org.apel.hermes.config.biz.service.JobDBConfigureService;
 import org.apel.hermes.config.biz.service.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 @Service
 @Transactional
 public class JobServiceImpl extends AbstractBizCommonService<Job, String> implements JobService{
 
-	@Autowired
-	private JobRepository jobRepository;
 	
 	@Autowired
-	private EntityManager entityManager;
+	private DBConfigureService dBConfigureService;
 	
 	@Autowired
-	private TaskRepository taskRepository;
-
+	private JobDBConfigureService jobDBConfigureService;
+	
+	@Autowired
+	private JobService jobService;
 	
 	@Override
-	protected CommonRepository<Job, String> getRepository() {
-		return jobRepository;
+	public String save(Job job){
+		String jobId = super.save(job);
+		List<String> inIds = job.getInList();
+		//保存输入源
+		for(String id:inIds){
+			DBConfigure dbconfigure = dBConfigureService.findById(id);
+			JobDBConfigure jobDBConfigure = new JobDBConfigure();
+			jobDBConfigure.setInDBconfigure(dbconfigure);
+			jobDBConfigure.setJob(job);
+			jobDBConfigureService.save(jobDBConfigure);
+		}
+		List<String> outIds = job.getOutList();
+		for(String id:outIds){
+			DBConfigure dbconfigure = dBConfigureService.findById(id);
+			JobDBConfigure jobDBConfigure = new JobDBConfigure();
+			jobDBConfigure.setOutDBconfigure(dbconfigure);
+			jobDBConfigure.setJob(job);
+			jobDBConfigureService.save(jobDBConfigure);
+		}
+		return jobId;
 	}
-
+	
 	@Override
-	protected String getPageQl() {
-		return "select t from Job t where 1=1";
-	}
-
-	@SuppressWarnings("rawtypes")
-	@Override
-	public Map<String, String> checkRef(String code) {
-		String sql = "SELECT o.*  FROM etl_task o WHERE FIND_IN_SET('"+code+"',o.output) OR FIND_IN_SET('"+code+"',o.output)";
-		Query query = entityManager.createNativeQuery(sql);
+	public void update(Job job){
+		String id = job.getId();
+		Job jobEntity  = jobService.findById(id);
+		BeanUtils.copyNotNullProperties(job, jobEntity);
 		
-		List list = query.getResultList();
-		Map<String,String> map =  new HashMap<String,String>();
-		map.put("isRef", "false");
-		if(list!=null && list.size()>0){
-			map.put("isRef", "true");
-		}
-		return map;
-	}
-
-	@Override
-	public Map<String, String> checkIsRepeat(String jobBizId) throws Exception {
-		List<Job> jobs = jobRepository.findByJobBizId(jobBizId);
-		Map<String,String> map = new HashMap<String,String>();
-		map.put("isRepeat", "false");
-		if(jobs!=null && jobs.size()>0){
-			map.put("isRepeat","true");
-		}
-		return map;
-	}
-
-	@Override
-	public Job findByJobBizId(String jobBizId) {
-		List<Job> jobs = jobRepository.findByJobBizId(jobBizId);
-		return (CollectionUtils.isEmpty(jobs))?null:jobs.get(0);
-	}
-
-	@Override
-	public void batchDelete(String[] ids) throws Exception {
-		for(String id:ids){
-			taskRepository.deleteByJobId(id);
-			this.deleteById(id);
-			
+		
+		List<String> inList = job.getInList();
+		
+		List<String> outList = job.getOutList();
+		
+		for(String inId:inList){
+			JobDBConfigure inJobDB = jobDBConfigureService.findByJobIdAndInDBconfigureId(id,inId);
+			if(inJobDB==null){
+				inJobDB = new JobDBConfigure();
+				
+				DBConfigure dbconfigure = dBConfigureService.findById(inId);
+				inJobDB.setInDBconfigure(dbconfigure);
+				inJobDB.setJob(jobEntity);
+				jobDBConfigureService.save(inJobDB);
+			}
 		}
 		
 		
+		for(String outId:outList){
+			JobDBConfigure outJobDB = jobDBConfigureService.findByJobIdAndOutDBconfigureId(id,outId);
+			if(outJobDB==null){
+				outJobDB = new JobDBConfigure();
+				
+				DBConfigure dbconfigure = dBConfigureService.findById(outId);
+				outJobDB.setOutDBconfigure(dbconfigure);
+				outJobDB.setJob(jobEntity);
+				jobDBConfigureService.save(outJobDB);
+			}
+		}
+		
+		
 	}
 
-	
 }
