@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>作业实体</title>
+  ${jsContext}${appJs}${jquery}${bootstrap}${jqueryUI}${jqGrid}${vue}${ele}${pnotify}
+  <script type="text/javascript" src="${request.contextPath}/js/job/job_index.js"></script>
+	<link rel="stylesheet" href="${request.contextPath}/css/global.css">
+</head>
+<body>
+	<div id="app">
+		<el-row>
+			<el-col :span="4">
+				<h5 class="tool-title">
+					作业实体
+				</h5>
+			</el-col>
+			<el-col :span="10" offset="10">
+				<div class="float-right">
+					<el-button type="primary" @click="add" size="small" icon="plus">新增</el-button>
+					<el-button size="small" @click="compositeSearch">检索</el-button>
+					<el-button size="small" @click="refreshPage" v-loading.fullscreen.lock="fullscreenLoading">刷新</el-button>
+				</div>
+			</el-col>
+		</el-row>
+		
+		<div class="split-line"></div>
+		
+		<el-row>
+			<el-form ref="toolBarForm" :model="toolBarForm" :inline="true">
+				<el-col :span="3">
+				  		<el-form-item>
+							<el-select v-model="toolBarForm.condition" size="small"  placeholder="搜索条件">
+								<el-option label="作业名称" value="jobName"></el-option>
+								<el-option label="作业KEY" value="jobKey"></el-option>
+
+							</el-select>
+						</el-form-item>
+				</el-col>
+				<el-col :span="4">
+					<el-form-item>
+						<el-input v-model="toolBarForm.value" onkeyup="if(arguments[0].keyCode == 13)commonSearch();" size="small"></el-input>
+					</el-form-item>
+				</el-col>
+			</el-form>
+			<el-col :span="13">
+				<el-button icon="search" size="small" @click="commonSearch" type="primary">搜索</el-button>
+				<el-button icon="edit" size="small" @click="edit">编辑</el-button>
+				<el-button icon="delete" size="small" @click="del" type="danger" :plain="true">删除</el-button>
+				<el-button size="small" @click="exp">导出</el-button>
+				
+				<el-button icon="edit" size="small" @click="taskConfigure">任务配置</el-button>
+				
+			</el-col>
+			<el-col :span="1" offset="3">
+				<div class="float-right">
+					<el-button icon="setting" size="small" @click="selectGridColumn"></el-button>
+				</div>
+			</el-col>
+		</el-row>
+		<el-row>
+	  		<el-col :span="24">
+	  			<div>
+	  				<table id="list"></table>
+					<div id="pager"></div>
+				</div>
+	  		</el-col>
+		</el-row>
+	
+		<el-dialog title="详细信息" size="large" v-model="dialogFormVisible" lock-scroll @close="resetForm">
+			<el-form ref="form" :rules="formRules" :model="form" label-width="80px">
+				
+				<el-row>
+					<el-col :span="12">
+						<el-form-item label="作业KEY" prop="jobKey">
+							<el-input v-model="form.jobKey" size="small" placeholder="请输入作业KEY"></el-input>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12">
+						<el-form-item label="作业名称" prop="jobName">
+							<el-input v-model="form.jobName" size="small" placeholder="请输入作业名称"></el-input>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row>
+					<el-col :span="12">
+						<el-form-item label="cron表达式" prop="schedule">
+							<el-input v-model="form.schedule" size="small" placeholder="请输入cron表达式"></el-input>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12">
+						<el-form-item label="描述" prop="description">
+							<el-input v-model="form.description" size="small" placeholder="请输入描述"></el-input>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row>
+					<el-col :span="12">
+						<el-form-item label="输入源" >
+							<el-select size="small" v-model="form._in" 
+							placeholder="请选择" v-on:change="dbChange($event,'in')">
+								<el-option
+							      v-for="item in dBdata"
+							      :label="item.dbName"
+							      :value="item"
+							      >
+							    </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					
+					
+					
+					<el-col :span="12">
+						<el-form-item label="输出源" >
+							<el-select size="small" v-model="form._out" 
+							placeholder="请选择" v-on:change="dbChange($event,'out')">
+								<el-option
+							      v-for="item in dBdata"
+							      :label="item.dbName"
+							      :value="item"
+							      >
+							</el-select>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				
+				
+				
+				<el-row>
+					<el-col :span="12">
+						<el-form-item >
+							<el-row v-for="(item,index) in jobDBConfigureIn" :key="item.id">
+								<el-col :span="18">
+									<el-input style="width:80%;"
+									  v-model="item.dbName"
+									   size="small"
+									  :disabled="true">
+									</el-input>
+								</el-col>
+								
+								<el-col :span="6">
+									<el-button icon="delete" size="small" 
+									@click="dbDel(index,'in')" type="danger" :plain="true">删除</el-button>
+								</el-col>
+							</el-row>
+						</el-form-item>
+					</el-col>
+					
+					<el-col :span="12">
+						<el-form-item>
+							<el-row v-for="(item,index) in jobDBConfigureOut" :key="item.id">
+								<el-col :span="18">
+									<el-input style="width:80%;"
+									  v-model="item.dbName"
+									   size="small"
+									  :disabled="true">
+									</el-input>
+								</el-col>
+								<el-col :span="6">
+									<el-button icon="delete" size="small" 
+									@click="dbDel(index,'out')" type="danger" :plain="true">删除</el-button>
+								</el-col>
+						   </el-row>
+							
+						</el-form-item>
+					</el-col>
+				</el-row>
+
+				
+			</el-form> 
+			<div slot="footer" class="dialog-footer">
+				<el-button type="primary" size="small" @click="onSubmit">{{submitBtnName}}</el-button>
+				<el-button size="small" @click="resetForm">取消</el-button>
+			</div>
+		</el-dialog>
+		
+		
+		
+		
+		<!-- 编辑操作 -->
+		<el-dialog title="列表显示列" v-model="dialogGridSelectionVisible" lock-scroll>
+			<div class="col-sm-12">
+				<div class="grid-column-checkbox" v-for="col in checkboxCols">
+					 <el-checkbox v-model="col.visible">{{col.name}}</el-checkbox>
+				</div>
+			</div>
+			<div slot="footer" class="dialog-footer">
+				<el-button size="small" @click="dialogGridSelectionVisible = false">取 消</el-button>
+				<el-button type="primary" @click="saveColVisible" size="small" >确 定</el-button>
+			</div>
+		</el-dialog>
+		
+		
+		
+		<!-- 任务  开始-->
+		<el-dialog title="任务配置管理" size="large" v-model="taskDialogFormVisible" lock-scroll @close="taskResetForm">
+			<el-form ref="taskForm" :rules="taskFormRules" :model="taskForm" label-width="80px">
+				
+				<el-row>
+					<el-col :span="12">
+						<el-form-item label="任务KEY" prop="taskKey">
+							<el-input v-model="taskForm.taskKey" size="small" placeholder="请输入作业KEY"></el-input>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				
+				<el-row>
+					<el-col :span="12">
+						<el-form-item label="输入源" >
+							<el-select size="small" v-model="taskForm.dbInput"  
+							placeholder="请选择" >
+								<el-option
+							      v-for="item in jobDBConfigureIn"
+							      :label="item.dbName"
+							      :value="item"
+							      >
+							    </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					
+					<el-col :span="12">
+						<el-form-item label="输出源" >
+							<el-select size="small" v-model="taskForm.dbOutput" 
+							placeholder="请选择">
+								<el-option
+							      v-for="item in jobDBConfigureOut"
+							      :label="item.dbName"
+							      :value="item"
+							      >
+							</el-select>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				
+				
+				<!-- 工具栏 -->
+				
+		<el-row>
+			<el-form ref="taskToolBarForm" :model="taskToolBarForm" :inline="true">
+				<el-col :span="3">
+				  		<el-form-item>
+							<el-select v-model="taskToolBarForm.condition" size="small"  placeholder="搜索条件">
+								<el-option label="任务KEY" value="taskKey"></el-option>
+
+							</el-select>
+						</el-form-item>
+				</el-col>
+				<el-col :span="4">
+					<el-form-item>
+						<el-input v-model="taskToolBarForm.value" onkeyup="if(arguments[0].keyCode == 13)taskCommonSearch();" size="small"></el-input>
+					</el-form-item>
+				</el-col>
+			</el-form>
+			<el-col :span="13">
+				<el-button icon="search" size="small" @click="taskCommonSearch" type="primary">搜索</el-button>
+				<el-button icon="edit" size="small" @click="taskEdit">编辑</el-button>
+				<el-button icon="delete" size="small" @click="taskDel" type="danger" :plain="true">删除</el-button>
+					<el-button type="primary"  size="small"  @click=taskOnSubmit icon="plus">保存</el-button>
+			</el-col>
+			<el-col :span="1" offset="3">
+				<div class="float-right">
+					<el-button icon="setting" size="small" @click="taskSelectGridColumn"></el-button>
+				</div>
+			</el-col>
+		</el-row>
+				
+				<el-row>
+			  		<el-col :span="24">
+			  			<div>
+			  				<table id="taskList"></table>
+							<div id="taskPager"></div>
+						</div>
+			  		</el-col>
+				</el-row>
+				
+			</el-form> 
+		</el-dialog>
+		<!-- 任务结束 -->
+		
+		<el-dialog title="列表显示列" v-model="taskDialogGridSelectionVisible" lock-scroll>
+			<div class="col-sm-12">
+				<div class="grid-column-checkbox" v-for="col in taskCheckboxCols">
+					 <el-checkbox v-model="col.visible">{{col.name}}</el-checkbox>
+				</div>
+			</div>
+			<div slot="footer" class="dialog-footer">
+				<el-button size="small" @click="taskDialogGridSelectionVisible = false">取 消</el-button>
+				<el-button type="primary" @click="taskSaveColVisible" size="small" >确 定</el-button>
+			</div>
+		</el-dialog>
+		
+
+	</div>
+  
+</body>
+
+</html>
