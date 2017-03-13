@@ -37,6 +37,7 @@ public class TaskServiceImpl extends AbstractBizCommonService<Task, String> impl
 		if(taskEntity!=null){
 			return "";
 		}
+		task.setId("");
 		super.save(task);
 		return task.getId();
 		

@@ -62,9 +62,9 @@ public class TaskController {
 		task.setId(task.getId());
 		String ret = taskService.modify(task);
 		if(ret.equals("")){
-			return MessageUtil.message("task.update.success");
+			return MessageUtil.message("task.key.repeat");
 		}
-		return MessageUtil.message("task.key.repeat");
+		return MessageUtil.message("task.update.success");
 		
 		
 	}

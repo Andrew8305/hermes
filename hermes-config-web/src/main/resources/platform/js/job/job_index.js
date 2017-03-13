@@ -400,6 +400,7 @@ $(function(){
         					afterOperation: function(data){
         						context.taskToolBarForm.value = "";
 			            		context.taskToolBarForm.condition = "";
+			            		context.formEdit = false;
 			            		PlatformUI.refreshGrid(taskGrid, {
 			            			sortname:"createDate",sortorder:"desc",
 			            			postData: {filters:defaultCondition()}	
