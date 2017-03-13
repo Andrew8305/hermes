@@ -1,33 +1,26 @@
 package org.apel.hermes.config.biz.service;
 
 import java.util.List;
-import java.util.Map;
 
+import org.apel.gaia.commons.exception.PlatformException;
 import org.apel.gaia.infrastructure.BizCommonService;
 import org.apel.hermes.config.biz.domain.Task;
+import org.springframework.data.jpa.repository.Query;
 
 public interface TaskService extends BizCommonService<Task,String>{
 
-	/**
-	 * 根据作业ID查找任务列表
-	 * @param	jobId
-	 * @return
-	 */
-	public List<Task> findByJobId(String jobId);
-	/**
-	 * 根据作业ID查找任务ID列表
-	 * @param	jobBizId
-	 * @return
-	 */
-	public List<String> findTaskIdsByJobId(String jobBizId);
-	/**
-	 * 根据 作业ID 和 任务业务ID 检查是否重复
-	 * @param	jobId
-	 * @param taskBizID
-	 * @return
-	 * @throws Exception
-	 */
-	public Map<String, String> checkIsRepeat(String jobId,String taskBizId)throws Exception;
+	void deleteByJobIdAndDbInputId(String string, String id)throws PlatformException;
+
+	void deleteByJobIdAndDbOutputId(String string, String id);
+	 String modify(Task task);
+	 
 	
+	List<Task> findAllByJobJobKey(String jobBizId);
+	
+	List<Task> findAllByJobJobKeyAndTaskKeyAndDbInputIsNotNull(String jobKey,String taskKey);
+
+	List<Task> findAllByJobJobKeyAndTaskKeyAndDbOutputIsNotNull(String jobBizId, String taskBizId);
+
+	void deleteByJobId(String id);
 
 }
