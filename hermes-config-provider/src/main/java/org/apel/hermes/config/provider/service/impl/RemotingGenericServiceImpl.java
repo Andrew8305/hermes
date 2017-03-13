@@ -32,8 +32,6 @@ public class RemotingGenericServiceImpl implements RemotingGenericService{
 	private JobService jobService;
 	@Autowired
 	private TaskService taskService;
-	@Autowired
-	private JobDBConfigureService jobDBConfigureService;
 	
 	
 	
