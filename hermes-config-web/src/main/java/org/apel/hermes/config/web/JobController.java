@@ -32,6 +32,7 @@ public class JobController {
 	//首页
 	@RequestMapping(value = "index", method = RequestMethod.GET)
 	public String index(){
+		
 		return INDEX_URL;
 	}
 	
