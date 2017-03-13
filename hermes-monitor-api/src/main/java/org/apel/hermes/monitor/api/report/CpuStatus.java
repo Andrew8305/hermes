@@ -1,6 +1,8 @@
 package org.apel.hermes.monitor.api.report;
 
 import java.io.Serializable;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
