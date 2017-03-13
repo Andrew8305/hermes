@@ -60,6 +60,14 @@ public class JobDBConfigureServiceImpl extends AbstractBizCommonService<JobDBCon
 		return jobDBConfigureRepository.findByJobIdAndOutDBconfigureId(jobId,outId);
 	}
 
+
+	@Override
+	public void deleteByJobId(String jobId) {
+		jobDBConfigureRepository.deleteByJobId(jobId);
+		
+		
+	}
+
 	
 
 }

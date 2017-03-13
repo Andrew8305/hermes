@@ -12,6 +12,7 @@ import org.apel.hermes.config.biz.domain.JobDBConfigure;
 import org.apel.hermes.config.biz.service.DBConfigureService;
 import org.apel.hermes.config.biz.service.JobDBConfigureService;
 import org.apel.hermes.config.biz.service.JobService;
+import org.apel.hermes.config.biz.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,11 +28,17 @@ public class JobServiceImpl extends AbstractBizCommonService<Job, String> implem
 	@Autowired
 	private JobDBConfigureService jobDBConfigureService;
 	
+	
 	@Autowired
 	private JobService jobService;
 	
 	@Autowired
 	private JobRepository jobRepository;
+	
+	@Autowired
+	private TaskService taskService;
+	
+	
 	
 	@Override
 	public String save(Job job){
@@ -99,5 +106,18 @@ public class JobServiceImpl extends AbstractBizCommonService<Job, String> implem
 	public Optional<Job> findByJobKey(String jobBizId) {
 		return jobRepository.findByJobKey(jobBizId);
 	}
+	
+	
+	@Override
+	public void deleteById(String... ids){
+		for(String id:ids){
+			jobDBConfigureService.deleteByJobId(id);
+			
+			taskService.deleteByJobId(id);
+			
+			super.deleteById(id);
+		}
+	}
+	
 
 }

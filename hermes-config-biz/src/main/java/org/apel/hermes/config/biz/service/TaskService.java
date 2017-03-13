@@ -21,4 +21,6 @@ public interface TaskService extends BizCommonService<Task,String>{
 
 	List<Task> findAllByJobJobKeyAndTaskKeyAndDbOutputIsNotNull(String jobBizId, String taskBizId);
 
+	void deleteByJobId(String id);
+
 }

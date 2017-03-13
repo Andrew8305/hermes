@@ -28,5 +28,10 @@ public interface TaskRepository extends CommonRepository<Task, String>{
 	
 	@Query
 	List<Task> findAllByJobJobKeyAndTaskKeyAndDbOutputIsNotNull(String jobBizId, String taskBizId);
+	
+	
+	@Query
+	@Modifying
+	void deleteByJobId(String id);
 
 }

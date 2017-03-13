@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apel.gaia.persist.dao.CommonRepository;
 import org.apel.hermes.config.biz.domain.JobDBConfigure;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 public interface JobDBConfigureRepository extends CommonRepository<JobDBConfigure, String>{
@@ -14,5 +15,10 @@ public interface JobDBConfigureRepository extends CommonRepository<JobDBConfigur
 	JobDBConfigure findByJobIdAndInDBconfigureId(String jobId, String inId);
 	@Query
 	JobDBConfigure findByJobIdAndOutDBconfigureId(String jobId, String outId);
+	
+	
+	@Query
+	@Modifying
+	void deleteByJobId(String jobId);
 
 }

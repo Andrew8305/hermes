@@ -70,6 +70,12 @@ public class TaskServiceImpl extends AbstractBizCommonService<Task, String> impl
 		return taskRepository.findAllByJobJobKeyAndTaskKeyAndDbOutputIsNotNull(jobBizId, taskBizId);
 	}
 
+	@Override
+	public void deleteByJobId(String id) {
+		taskRepository.deleteByJobId(id);
+		
+	}
+
 	
 
 }
