@@ -43,6 +43,7 @@ $(function(){
 					type:'GET',
 					url:contextPath+'/monitor',
 					data:{},
+					message:PlatformUI.message,
 					afterOperation:function(data){
 						if(data && !data.statusCode)vue.monitors = data;
 						if(!vue.monitors || vue.monitors.length<=0){
@@ -74,6 +75,7 @@ $(function(){
 					type:'GET',
 					url:contextPath+'/monitor/getOne',
 					data:{id:id},
+					message:PlatformUI.message,
 					afterOperation:function(data){
 						if(data.responseText==""){
 							PlatformUI.message({message:"挂载点已失效", type:"warning"});
