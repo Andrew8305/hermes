@@ -252,9 +252,6 @@ $(function(){
 					});
 		        });
 			},
-			exp: function(){//导出
-				PlatformUI.exportGrid("list", "from etl_job");
-			},
 			resetForm: function(){
 				this.dialogFormVisible = false;
 				debugger;

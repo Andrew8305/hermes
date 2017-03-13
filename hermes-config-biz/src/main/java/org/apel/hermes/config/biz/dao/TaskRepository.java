@@ -1,5 +1,7 @@
 package org.apel.hermes.config.biz.dao;
 
+import java.util.List;
+
 import org.apel.gaia.persist.dao.CommonRepository;
 import org.apel.hermes.config.biz.domain.Task;
 import org.springframework.data.jpa.repository.Modifying;
@@ -16,5 +18,15 @@ public interface TaskRepository extends CommonRepository<Task, String>{
 	
 	@Query
 	Task findByJobIdAndTaskKey(String id, String key);
+	
+	
+	@Query
+	List<Task> findAllByJobJobKey(String jobBizId);
+	
+	@Query
+	List<Task> findAllByJobJobKeyAndTaskKeyAndDbInputIsNotNull(String jobKey, String taskKey);
+	
+	@Query
+	List<Task> findAllByJobJobKeyAndTaskKeyAndDbOutputIsNotNull(String jobBizId, String taskBizId);
 
 }

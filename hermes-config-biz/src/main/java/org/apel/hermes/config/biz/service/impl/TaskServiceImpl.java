@@ -1,5 +1,7 @@
 package org.apel.hermes.config.biz.service.impl;
 
+import java.util.List;
+
 import org.apel.gaia.commons.exception.PlatformException;
 import org.apel.gaia.infrastructure.impl.AbstractBizCommonService;
 import org.apel.hermes.config.biz.dao.TaskRepository;
@@ -49,6 +51,22 @@ public class TaskServiceImpl extends AbstractBizCommonService<Task, String> impl
 		}
 		super.update(task);
 		return task.getId();
+	}
+
+	@Override
+	public List<Task> findAllByJobJobKey(String jobBizId) {
+		return taskRepository.findAllByJobJobKey(jobBizId);
+	}
+
+	@Override
+	public List<Task> findAllByJobJobKeyAndTaskKeyAndDbInputIsNotNull(String jobKey, String taskKey) {
+		
+		return taskRepository.findAllByJobJobKeyAndTaskKeyAndDbInputIsNotNull(jobKey,taskKey);
+	}
+
+	@Override
+	public List<Task> findAllByJobJobKeyAndTaskKeyAndDbOutputIsNotNull(String jobBizId, String taskBizId) {
+		return taskRepository.findAllByJobJobKeyAndTaskKeyAndDbOutputIsNotNull(jobBizId, taskBizId);
 	}
 
 	

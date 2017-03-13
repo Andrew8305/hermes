@@ -13,5 +13,8 @@ public interface JobDBConfigureService extends BizCommonService<JobDBConfigure,S
 	JobDBConfigure findByJobIdAndInDBconfigureId(String jobId, String inId);
 
 	JobDBConfigure findByJobIdAndOutDBconfigureId(String jobId, String outId);
+	
+	
+	
 
 }

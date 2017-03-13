@@ -6,6 +6,7 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 
 @Entity
@@ -32,6 +33,9 @@ public class DBConfigure implements Serializable{
 	private String  url;
 	// password
 	private String  password;
+	
+	@Transient
+	public static final String TYPE_CODE="DB";
 
 	
 	public String getId() {
@@ -80,5 +84,7 @@ public class DBConfigure implements Serializable{
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
+	
 
 }

@@ -1,9 +1,11 @@
 package org.apel.hermes.config.biz.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apel.gaia.infrastructure.impl.AbstractBizCommonService;
 import org.apel.gaia.util.BeanUtils;
+import org.apel.hermes.config.biz.dao.JobRepository;
 import org.apel.hermes.config.biz.domain.DBConfigure;
 import org.apel.hermes.config.biz.domain.Job;
 import org.apel.hermes.config.biz.domain.JobDBConfigure;
@@ -27,6 +29,9 @@ public class JobServiceImpl extends AbstractBizCommonService<Job, String> implem
 	
 	@Autowired
 	private JobService jobService;
+	
+	@Autowired
+	private JobRepository jobRepository;
 	
 	@Override
 	public String save(Job job){
@@ -88,6 +93,11 @@ public class JobServiceImpl extends AbstractBizCommonService<Job, String> implem
 		}
 		
 		
+	}
+
+	@Override
+	public Optional<Job> findByJobKey(String jobBizId) {
+		return jobRepository.findByJobKey(jobBizId);
 	}
 
 }
