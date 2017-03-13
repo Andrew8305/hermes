@@ -8,16 +8,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import javax.activation.DataSource;
-
 import org.apel.hermes.common.consist.ETLResourceConsist;
 import org.apel.hermes.config.api.RemotingGenericService;
 import org.apel.hermes.config.api.domain.JobConfig;
 import org.apel.hermes.config.biz.domain.DBConfigure;
 import org.apel.hermes.config.biz.domain.Job;
 import org.apel.hermes.config.biz.domain.Task;
-import org.apel.hermes.config.biz.service.JobDBConfigureService;
 import org.apel.hermes.config.biz.service.JobService;
 import org.apel.hermes.config.biz.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
