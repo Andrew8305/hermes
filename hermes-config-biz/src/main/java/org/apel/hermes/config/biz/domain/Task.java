@@ -2,13 +2,14 @@ package org.apel.hermes.config.biz.domain;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import org.springframework.format.annotation.DateTimeFormat;
+import javax.persistence.Transient;
 
 
 @Entity
@@ -28,14 +29,11 @@ public class Task implements Serializable{
 	@JoinColumn(name="job")
 	private Job job;
 	
-	// 输入源
-	@ManyToOne
-	@JoinColumn(name="db_in")
-	private DBConfigure  dbInput;
-	// 输出源
-	@ManyToOne
-	@JoinColumn(name="db_out")
-	private DBConfigure  dbOutput;
+	@Transient
+	private List<DBConfigure> inList;
+	
+	@Transient
+	private List<DBConfigure> outList;
 
 	
 	public String getId() {
@@ -69,22 +67,22 @@ public class Task implements Serializable{
 		this.job = job;
 	}
 
-	public DBConfigure getDbInput() {
-		return dbInput;
+	public List<DBConfigure> getInList() {
+		return inList;
 	}
 
-	public void setDbInput(DBConfigure dbInput) {
-		this.dbInput = dbInput;
+	public void setInList(List<DBConfigure> inList) {
+		this.inList = inList;
 	}
 
-	public DBConfigure getDbOutput() {
-		return dbOutput;
+	public List<DBConfigure> getOutList() {
+		return outList;
 	}
 
-	public void setDbOutput(DBConfigure dbOutput) {
-		this.dbOutput = dbOutput;
+	public void setOutList(List<DBConfigure> outList) {
+		this.outList = outList;
 	}
-	
+
 	
 
 }

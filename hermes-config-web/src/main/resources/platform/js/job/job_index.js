@@ -25,6 +25,8 @@ $(function(){
 				form: {_out:null,jobName:null,description:null,_in:null,jobKey:null,schedule:null},
 				jobDBConfigureIn:[],
 				jobDBConfigureOut:[],
+				taskDBConfigureIn:[],
+				taskDBConfigureOut:[],
 				formRules: {
 					jobName:[
 						{ required: 'true', message: '必填项', trigger: 'blur' }
@@ -86,31 +88,30 @@ $(function(){
 					}
 				});
 			},
-			dbChange:function(item,oper){
-				if(item==null){
-					return ;
-				}
-				var db = {id:item.id,dbName:item.dbName};
+			addDb:function(oper){
 				var flag = false;
-				if(oper=="in"){
+				if(oper=="in" && null != vue.form._in ){
+					var data = vue.form._in;
 					$.each(this.jobDBConfigureIn,function(index,obj){
-						if(obj.id==item.id){
+						if(obj.id==data.id){
 							flag =true;
 							return;
 						}
 					});
 					if(!flag){
-						this.jobDBConfigureIn.push(db);
+						this.jobDBConfigureIn.push(data);
 					}
-				}else{
+				}
+				if(oper=="out" && null != vue.form._out ){
+					var data = vue.form._out;
 					$.each(this.jobDBConfigureOut,function(index,obj){
-						if(obj.id==item.id){
+						if(obj.id==data.id){
 							flag =true;
 							return;
 						}
 					});
 					if(!flag){
-						this.jobDBConfigureOut.push(db);
+						this.jobDBConfigureOut.push(data);
 					}
 				}
 			},
@@ -141,6 +142,7 @@ $(function(){
 					});
 				       
 				}
+				loadDBConfig();
 			},
 			refreshPage: function(){//刷新
 				this.fullscreenLoading = true;
@@ -176,6 +178,80 @@ $(function(){
 					}
 				});
 			},
+			taskAddDb:function(oper){
+				debugger;
+				var flag = false;
+				if(oper=="in" && null != vue.taskForm.dbInput ){
+					var data = vue.taskForm.dbInput;
+					$.each(this.taskDBConfigureIn,function(index,obj){
+						if(obj.id==data.id){
+							flag =true;
+							return;
+						}
+					});
+					if(!flag){
+						this.taskDBConfigureIn.push(data);
+					}
+				}
+				if(oper=="out" && null != vue.taskForm.dbOutput ){
+					var data = vue.taskForm.dbOutput;
+					$.each(this.taskDBConfigureOut,function(index,obj){
+						if(obj.id==data.id){
+							flag =true;
+							return;
+						}
+					});
+					if(!flag){
+						this.taskDBConfigureOut.push(data);
+					}
+				}
+				
+			},
+			taskDbDel:function($index,oper){
+				var taskDbId = "";
+				debugger;
+				
+				
+				
+				if(oper=="in" && undefined!=this.taskDBConfigureIn[$index] && undefined!=this.taskDBConfigureIn[$index].taskDbId &&
+						this.taskDBConfigureIn[$index].taskDbId && this.taskDBConfigureIn[$index].taskDbId!=""){
+					taskDbId = this.taskDBConfigureIn[$index].taskDbId;
+				}
+				if(oper=="out" && undefined!=this.taskDBConfigureOut[$index] && undefined!=this.taskDBConfigureOut[$index].taskDbId &&
+						this.taskDBConfigureOut[$index].taskDbId && this.taskDBConfigureOut[$index].taskDbId!=""){
+					taskDbId = this.taskDBConfigureOut[$index].taskDbId;
+				}
+				
+				if(taskDbId!=""){
+					if((this.taskDBConfigureOut!=null && this.taskDBConfigureOut.length==1) ||
+							(this.taskDBConfigureIn!=null && this.taskDBConfigureIn.length==1)){
+						PlatformUI.message({message: "任务至少保留一条输入、输出源!", type: "warning"});
+						return;
+					}
+				}
+				
+				
+				if(oper=="in"){
+					
+					
+					this.taskDBConfigureIn.splice($index,1);
+				}else{
+					this.taskDBConfigureOut.splice($index,1);
+				}
+				if(taskDbId!=""){
+		        	PlatformUI.ajax({
+						url: contextPath + "/taskDBConfigure/"+taskDbId,
+						type: "post",
+						data: {_method:"delete"},
+						message:PlatformUI.message,
+						afterOperation: function(){
+							
+							//PlatformUI.refreshGrid(grid, {sortname:"createDate",sortorder:"desc"});
+						}
+					});
+				       
+				}
+			},
 			taskEdit:function(){
 				var ids = taskGrid.jqGrid ('getGridParam', 'selarrrow');
 				if(ids.length != 1){
@@ -186,12 +262,21 @@ $(function(){
 				this.formEdit = true;
 				this.submitBtnName = "编辑提交";
 				PlatformUI.ajax({
-					url: contextPath + "/task/" + ids[0],
+					url: contextPath + "/taskDBConfigure/" + ids[0],
 					afterOperation: function(data, textStatus,jqXHR){
-						context.taskForm = $.extend(context.taskForm, data);
-						
-						debugger;
-						
+						context.taskForm = $.extend(context.taskForm, data[0].task);
+						vue.taskDBConfigureIn=[];
+						vue.taskDBConfigureOut=[];
+						$.each(data,function(index,obj){
+							if(obj.inDBconfigure!=null){
+								var outData = obj.inDBconfigure;
+								vue.taskDBConfigureIn.push({id:outData.id,dbName:outData.dbName,taskDbId:obj.id});
+							}
+							if(obj.outDBconfigure!=null){
+								var outData = obj.outDBconfigure;
+								vue.taskDBConfigureOut.push({id:outData.id,dbName:outData.dbName,taskDbId:obj.id});
+							}
+						});
 					}
 				});
 				
@@ -249,6 +334,7 @@ $(function(){
 			},
 			resetForm: function(){
 				this.dialogFormVisible = false;
+				vue.formEdit = false;
 				debugger;
 				this.$refs['form'].resetFields();
 				
@@ -292,6 +378,10 @@ $(function(){
         					afterOperation: function(data){
         						context.toolBarForm.value = "";
 			            		context.toolBarForm.condition = "";
+			            		if(context.formEdit){
+			            			vue.formEdit = false;
+			            		}
+			            		
 			            		PlatformUI.refreshGrid(grid, {sortname:"createDate",sortorder:"desc"		
 			            		});
         					}
@@ -372,16 +462,15 @@ $(function(){
         		this.$refs['taskForm'].validate(function(valid){
         			if (valid) {
         				var data = $.extend({}, context.taskForm);
-        				
-        				
-        				
         				//验证是否有数据源
         				var actionUrl = contextPath + "/task";
         				if(context.formEdit){
         					actionUrl = contextPath + "/task/update";
 				            data.id = data.id;
         				}else{
-        					if(data.dbInput==null || data.dbOutput==null){
+        					if(vue.taskDBConfigureIn==null || vue.taskDBConfigureOut==null
+        						|| 	vue.taskDBConfigureIn.length==0  || 	vue.taskDBConfigureOut.length==0
+        						){
         						PlatformUI.message({message: "输入源和输出源必选项!", type: "warning"});
         						return;
         					}
@@ -391,6 +480,8 @@ $(function(){
         				var job = {};
         				job.id = vue.jobId;
         				data.job = job;
+        				data.inList = vue.taskDBConfigureIn;
+        				data.outList=  vue.taskDBConfigureOut;
         				PlatformUI.ajax({
         		 			headers: {
         		 		        'Accept': 'application/json', 
@@ -403,6 +494,10 @@ $(function(){
         						context.taskToolBarForm.value = "";
 			            		context.taskToolBarForm.condition = "";
 			            		
+			            		if(context.formEdit){
+			            			this.taskDBConfigureIn=[];
+			        				this.taskDBConfigureOut=[];
+			            		}
 			            		
 			            		context.formEdit = false;
 			            		PlatformUI.refreshGrid(taskGrid, {
@@ -423,10 +518,14 @@ $(function(){
 		    	
 		    },
 		    taskResetForm:function(){
+		    	
+		    	vue.formEdit = false;
+		    	
 		    	//this.taskDialogFormVisible = false;
 				this.$refs['taskForm'].resetFields();
-				this.jobDBConfigureIn=[];
-				this.jobDBConfigureOut=[];
+				this.taskDBConfigureIn=[];
+				this.taskDBConfigureOut=[];
+				
 				this.taskForm = {taskKey:null,dbInput:null,dbOutput:null};
 				
 		    }
@@ -532,6 +631,7 @@ function taskCommonSearch(){
 }
 
 function loadDBConfig(){
+	vue.dBdata = [];
 	PlatformUI.ajax({
 		url: contextPath + "/dBConfigure/all",
 		afterOperation: function(data, textStatus,jqXHR){
@@ -577,14 +677,12 @@ function loadTask(){
         postData:{filters:defaultCondition()},
         mtype: "GET",
         multiselect: true,
-        colNames: ['ID','job名称','任务KEY','输入源','创建时间','输出源','创建时间'],
+        colNames: ['ID','job名称','任务KEY','创建时间','创建时间'],
         colModel: [
 			{ name: 'id', index:'id',hidden: true},
 			{ name: 'job.jobName', index:'job.jobName', align:'center', sortable: true},
 			{ name: 'taskKey', index:'taskKey', align:'center', sortable: true},
-			{ name: 'dbInput.dbName', index:'dbInput.dbName', align:'center', sortable: true},
 			{ name: 'createDate', index:'createDate',align:'center', expType:'date',expValue:'yyyy-MM-dd',searchoptions:{dataInit:PlatformUI.defaultJqueryUIDatePick}, sortable: true ,formatter:'date',formatoptions: { srcformat: 'U', newformat: 'Y-m-d H:i:s' }},
-			{ name: 'dbOutput.dbName', index:'dbOutput.dbName', align:'center', sortable: true},
 			{ name: 'createDate', index:'createDate',align:'center', expType:'date',expValue:'yyyy-MM-dd',searchoptions:{dataInit:PlatformUI.defaultJqueryUIDatePick}, sortable: true ,formatter:'date',formatoptions: { srcformat: 'U', newformat: 'Y-m-d H:i:s' }}
         ],
         pager: "#taskPager",

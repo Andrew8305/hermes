@@ -14,7 +14,9 @@ import org.apel.hermes.config.api.domain.JobConfig;
 import org.apel.hermes.config.biz.domain.DBConfigure;
 import org.apel.hermes.config.biz.domain.Job;
 import org.apel.hermes.config.biz.domain.Task;
+import org.apel.hermes.config.biz.domain.TaskDBConfigure;
 import org.apel.hermes.config.biz.service.JobService;
+import org.apel.hermes.config.biz.service.TaskDBConfigureService;
 import org.apel.hermes.config.biz.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -29,6 +31,9 @@ public class RemotingGenericServiceImpl implements RemotingGenericService{
 	@Autowired
 	private TaskService taskService;
 	
+	@Autowired
+	private TaskDBConfigureService taskDBConfigureService;
+	
 	
 	
 	@Override
@@ -40,24 +45,21 @@ public class RemotingGenericServiceImpl implements RemotingGenericService{
 
 	@Override
 	public List<Map<String, Object>> getInputResources(String jobBizId,String taskBizId) {
+		List<TaskDBConfigure> taskDBConfigureList = taskDBConfigureService.findByJobJobKeyAndTaskTaskKeyAndInDBconfigureIsNotNull(jobBizId,taskBizId);
+		List<DBConfigure> dbConfigure = taskDBConfigureList.stream().map(e->e.getInDBconfigure()).collect(Collectors.toList());
+		return getDBConfigure(dbConfigure);
 		
-		List<Task> task = taskService.findAllByJobJobKeyAndTaskKeyAndDbInputIsNotNull(jobBizId,taskBizId);
-		Set<DBConfigure> dbconfigures  = task.stream().collect(Collectors.groupingBy(Task::getDbInput))
-				.keySet();
-		return getDBConfigure(dbconfigures);
 	}
 	
 	
-	private List<Map<String,Object>> getDBConfigure(Set<DBConfigure> dbconfigures){
-		Iterator<DBConfigure> iterator = dbconfigures.iterator();
-		
+	private List<Map<String,Object>> getDBConfigure(List<DBConfigure> dbconfigures){
 		List<Map<String,Object>> result = new ArrayList<Map<String,Object>>();
-		while(iterator.hasNext()){
-			DBConfigure dbconfigure = iterator.next();
+		for(DBConfigure dbconfigure:dbconfigures){
 			Map<String,Object> datasource = new HashMap<String,Object>();
 			datasource.put(ETLResourceConsist.ID, dbconfigure.getDbKey());//数据源ID
 			datasource.put(ETLResourceConsist.NAME, dbconfigure.getDbName());//数据源名称
 			datasource.put(ETLResourceConsist.TYPE, dbconfigure.TYPE_CODE);//db
+			
 			result.add(datasource);
 		}
 		return result;
@@ -66,10 +68,9 @@ public class RemotingGenericServiceImpl implements RemotingGenericService{
 
 	@Override
 	public List<Map<String, Object>> getOutputResources(String jobBizId,String taskBizId) {
-		List<Task> task = taskService.findAllByJobJobKeyAndTaskKeyAndDbOutputIsNotNull(jobBizId,taskBizId);
-		Set<DBConfigure> dbconfigures  = task.stream().collect(Collectors.groupingBy(Task::getDbOutput))
-				.keySet();
-		return getDBConfigure(dbconfigures);
+		List<TaskDBConfigure> taskDBConfigureList = taskDBConfigureService.findByJobJobKeyAndTaskTaskKeyAndOutDBconfigureIsNotNull(jobBizId,taskBizId);
+		List<DBConfigure> dbConfigure = taskDBConfigureList.stream().map(e->e.getInDBconfigure()).collect(Collectors.toList());
+		return getDBConfigure(dbConfigure);
 	}
 
 	@Override
@@ -79,7 +80,6 @@ public class RemotingGenericServiceImpl implements RemotingGenericService{
 			JobConfig jobConfig=new JobConfig();
 			Job  job = jobEntity.get();
 			jobConfig.setId(job.getJobKey());
-			
 			jobConfig.setDesc(job.getDescription());
 			jobConfig.setName(job.getJobName());
 			jobConfig.setSchedule(job.getSchedule());

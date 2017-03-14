@@ -37,12 +37,6 @@ public class JobDBConfigureServiceImpl extends AbstractBizCommonService<JobDBCon
 		if(jobDBConfigure!=null){
 			DBConfigure inDB = jobDBConfigure.getInDBconfigure();
 			DBConfigure outDB = jobDBConfigure.getOutDBconfigure();
-			if(outDB!=null){
-				taskService.deleteByJobIdAndDbOutputId(id[0],outDB.getId());
-			}
-			if(inDB!=null){
-				taskService.deleteByJobIdAndDbInputId(id[0],inDB.getId());
-			}
 			super.deleteById(id);
 		}
 		

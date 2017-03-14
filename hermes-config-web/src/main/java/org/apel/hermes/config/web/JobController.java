@@ -1,10 +1,6 @@
 
 package org.apel.hermes.config.web;
-
-
-
 import java.util.List;
-
 import org.apel.gaia.commons.i18n.Message;
 import org.apel.gaia.commons.i18n.MessageUtil;
 import org.apel.gaia.commons.jqgrid.QueryParams;
@@ -29,12 +25,12 @@ public class JobController {
 private final static String INDEX_URL = "job/job_index";		
 			
 	@Autowired		
-	private JobService jobService;		
+	private JobService jobService;	
+	
 			
 	//首页		
 	@RequestMapping(value = "index", method = RequestMethod.GET)		
-	public String index(){		
-				
+	public String index(){	
 		return INDEX_URL;		
 	}		
 			
