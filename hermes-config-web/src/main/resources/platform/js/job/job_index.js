@@ -179,7 +179,6 @@ $(function(){
 				});
 			},
 			taskAddDb:function(oper){
-				debugger;
 				var flag = false;
 				if(oper=="in" && null != vue.taskForm.dbInput ){
 					var data = vue.taskForm.dbInput;
@@ -209,10 +208,6 @@ $(function(){
 			},
 			taskDbDel:function($index,oper){
 				var taskDbId = "";
-				debugger;
-				
-				
-				
 				if(oper=="in" && undefined!=this.taskDBConfigureIn[$index] && undefined!=this.taskDBConfigureIn[$index].taskDbId &&
 						this.taskDBConfigureIn[$index].taskDbId && this.taskDBConfigureIn[$index].taskDbId!=""){
 					taskDbId = this.taskDBConfigureIn[$index].taskDbId;
@@ -221,15 +216,6 @@ $(function(){
 						this.taskDBConfigureOut[$index].taskDbId && this.taskDBConfigureOut[$index].taskDbId!=""){
 					taskDbId = this.taskDBConfigureOut[$index].taskDbId;
 				}
-				
-				if(taskDbId!=""){
-					if((this.taskDBConfigureOut!=null && this.taskDBConfigureOut.length==1) ||
-							(this.taskDBConfigureIn!=null && this.taskDBConfigureIn.length==1)){
-						PlatformUI.message({message: "任务至少保留一条输入、输出源!", type: "warning"});
-						return;
-					}
-				}
-				
 				
 				if(oper=="in"){
 					
@@ -299,7 +285,7 @@ $(function(){
 						data: {_method:"delete",ids:ids},
 						message:PlatformUI.message,
 						afterOperation: function(){
-							PlatformUI.refreshGrid(grid, {sortname:"createDate",sortorder:"desc",
+							PlatformUI.refreshGrid(grid, {sortname:"createDate",sortorder:"desc"
 							});
 						}
 					});
@@ -311,8 +297,6 @@ $(function(){
 					PlatformUI.message({message:"请至少选择一条要删除的数据!", type:"warning"});
 					return;
 				}
-				
-				debugger;
 				
 				this.$confirm('此操作将永久删除数据, 是否继续?', '提示', {
 		          confirmButtonText: '确定',
@@ -335,7 +319,6 @@ $(function(){
 			resetForm: function(){
 				this.dialogFormVisible = false;
 				vue.formEdit = false;
-				debugger;
 				this.$refs['form'].resetFields();
 				
 				this.jobDBConfigureIn=[];
@@ -423,7 +406,6 @@ $(function(){
 		    },
 		    taskSaveColVisible: function(){
 		    	for(var i = 0; i < this.taskCheckboxCols.length; i++){
-		    		debugger;
 		    		if(this.taskCheckboxCols[i].visible){
 		    			taskGrid.showCol(this.taskCheckboxCols[i].value);
 		    		}else{
@@ -529,7 +511,7 @@ $(function(){
 				this.taskForm = {taskKey:null,dbInput:null,dbOutput:null};
 				
 		    }
-		},
+		}
 	});
 	
 	//绑定jqgrid resize事件
@@ -550,7 +532,7 @@ $(function(){
 			{ name: 'id', index:'id',hidden: true},
 			{ name: 'jobName', index:'jobName', align:'center', sortable: true},
 			{ name: 'jobKey', index:'jobKey', align:'center', sortable: true},
-			{ name: 'describe', index:'describe', align:'center', sortable: true},
+			{ name: 'description', index:'description', align:'center', sortable: true},
 			{ name: 'schedule', index:'schedule', align:'center', sortable: true},
 			{ name: 'createDate', index:'createDate',align:'center', expType:'date',expValue:'yyyy-MM-dd',searchoptions:{dataInit:PlatformUI.defaultJqueryUIDatePick}, sortable: true ,formatter:'date',formatoptions: { srcformat: 'U', newformat: 'Y-m-d H:i:s' }}
         ],
@@ -619,9 +601,6 @@ function taskCommonSearch(){
 		rules.push({"field":name,"op":"cn","data":value.trim()});
 	}
 	
-	debugger;
-	
-	
 	rules.push({"field":"job.id","op":"cn","data":vue.jobId});
 	var filters = {"groupOp":"AND","rules":rules};
 	taskGrid.jqGrid("setGridParam", {
@@ -652,7 +631,6 @@ function editloadDBConfig(){
 		url: contextPath + "/jobDBConfigure/"+id,
 		afterOperation: function(data, textStatus,jqXHR){
 			$.each(data,function(index,obj){
-				debugger;
 				if(obj.outDBconfigure!=null){
 					var outData = obj.outDBconfigure;
 					vue.jobDBConfigureOut.push({id:outData.id,dbName:outData.dbName,jobdbId:obj.id});
