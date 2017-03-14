@@ -93,11 +93,12 @@
 						</el-form-item>
 					</el-col>
 				</el-row>
+				<!-- 修改部分 -->
 				<el-row>
-					<el-col :span="12">
-						<el-form-item label="输入源" >
+					<el-col :span="8">
+						<el-form-item 	label="输入源">
 							<el-select size="small" v-model="form._in" 
-							placeholder="请选择" v-on:change="dbChange($event,'in')">
+							placeholder="请选择">
 								<el-option
 							      v-for="item in dBdata"
 							      :label="item.dbName"
@@ -108,12 +109,18 @@
 						</el-form-item>
 					</el-col>
 					
-					
-					
-					<el-col :span="12">
+					<el-col :span="4">
+						<el-form-item >
+							<el-form-item >
+							<el-button icon="plus" size="small" 
+									@click="addDb('in')" type="danger" :plain="true">增加</el-button>
+						</el-form-item>
+						</el-form-item>
+					</el-col>
+					<el-col :span="8">
 						<el-form-item label="输出源" >
 							<el-select size="small" v-model="form._out" 
-							placeholder="请选择" v-on:change="dbChange($event,'out')">
+							placeholder="请选择">
 								<el-option
 							      v-for="item in dBdata"
 							      :label="item.dbName"
@@ -122,9 +129,20 @@
 							</el-select>
 						</el-form-item>
 					</el-col>
+					<el-col :span="4">
+						<el-form-item >
+							<el-button icon="plus" size="small" 
+									@click="addDb('out')" type="danger" :plain="true">增加</el-button>
+						</el-form-item>
+					</el-col>
 				</el-row>
 				
 				
+				
+				
+				
+				
+				<!-- 添加开妈 -->
 				
 				<el-row>
 					<el-col :span="12">
@@ -139,7 +157,7 @@
 								</el-col>
 								
 								<el-col :span="6">
-									<el-button icon="delete" size="small" 
+									<el-button icon="delete" size="small"  style="margin-left:20px;"
 									@click="dbDel(index,'in')" type="danger" :plain="true">删除</el-button>
 								</el-col>
 							</el-row>
@@ -157,7 +175,7 @@
 									</el-input>
 								</el-col>
 								<el-col :span="6">
-									<el-button icon="delete" size="small" 
+									<el-button icon="delete" size="small"  style="margin-left:20px;"
 									@click="dbDel(index,'out')" type="danger" :plain="true">删除</el-button>
 								</el-col>
 						   </el-row>
@@ -205,7 +223,7 @@
 				</el-row>
 				
 				<el-row>
-					<el-col :span="12">
+					<el-col :span="8">
 						<el-form-item label="输入源" >
 							<el-select size="small" v-model="taskForm.dbInput"  
 							placeholder="请选择" >
@@ -219,7 +237,15 @@
 						</el-form-item>
 					</el-col>
 					
-					<el-col :span="12">
+					<el-col :span="4">
+						<el-form-item>
+							<el-button icon="plus" size="small" 
+									@click="taskAddDb('in')" type="danger" :plain="true">增加</el-button>
+						</el-form-item>
+					</el-col>
+					
+					
+					<el-col :span="8">
 						<el-form-item label="输出源" >
 							<el-select size="small" v-model="taskForm.dbOutput" 
 							placeholder="请选择">
@@ -231,7 +257,60 @@
 							</el-select>
 						</el-form-item>
 					</el-col>
+					
+					
+					<el-col :span="4">
+						<el-form-item>
+							<el-button icon="plus" size="small" 
+									@click="taskAddDb('out')" type="danger" :plain="true">增加</el-button>
+							
+						</el-form-item>
+					</el-col>
 				</el-row>
+				
+				
+				<!-- 数据源信息 -->
+				
+				<el-row>
+					<el-col :span="12">
+						<el-form-item >
+							<el-row v-for="(item,index) in taskDBConfigureIn" :key="item.id">
+								<el-col :span="18">
+									<el-input style="width:80%;"
+									  v-model="item.dbName"
+									   size="small"
+									  :disabled="true">
+									</el-input>
+								</el-col>
+								
+								<el-col :span="6">
+									<el-button icon="delete" size="small"  style="margin-left:20px;"
+									@click="taskDbDel(index,'in')" type="danger" :plain="true">删除</el-button>
+								</el-col>
+							</el-row>
+						</el-form-item>
+					</el-col>
+					
+					<el-col :span="12">
+						<el-form-item>
+							<el-row v-for="(item,index) in taskDBConfigureOut" :key="item.id">
+								<el-col :span="18">
+									<el-input style="width:80%;"
+									  v-model="item.dbName"
+									   size="small"
+									  :disabled="true">
+									</el-input>
+								</el-col>
+								<el-col :span="6">
+									<el-button icon="delete" size="small"  style="margin-left:20px;"
+									@click="taskDbDel(index,'out')" type="danger" :plain="true">删除</el-button>
+								</el-col>
+						   </el-row>
+							
+						</el-form-item>
+					</el-col>
+				</el-row>
+				
 				
 				
 				<!-- 工具栏 -->
@@ -256,7 +335,8 @@
 				<el-button icon="search" size="small" @click="taskCommonSearch" type="primary">搜索</el-button>
 				<el-button icon="edit" size="small" @click="taskEdit">编辑</el-button>
 				<el-button icon="delete" size="small" @click="taskDel" type="danger" :plain="true">删除</el-button>
-					<el-button type="primary"  size="small"  @click=taskOnSubmit icon="plus">保存</el-button>
+				<el-button type="edit"  size="small"  @click=taskResetForm icon="plus">重置</el-button>
+				<el-button type="primary"  size="small"  @click=taskOnSubmit icon="plus">保存</el-button>
 			</el-col>
 			<el-col :span="1" offset="3">
 				<div class="float-right">

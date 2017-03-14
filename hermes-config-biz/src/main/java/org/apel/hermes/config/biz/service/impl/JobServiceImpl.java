@@ -9,9 +9,11 @@ import org.apel.hermes.config.biz.dao.JobRepository;
 import org.apel.hermes.config.biz.domain.DBConfigure;
 import org.apel.hermes.config.biz.domain.Job;
 import org.apel.hermes.config.biz.domain.JobDBConfigure;
+import org.apel.hermes.config.biz.domain.Task;
 import org.apel.hermes.config.biz.service.DBConfigureService;
 import org.apel.hermes.config.biz.service.JobDBConfigureService;
 import org.apel.hermes.config.biz.service.JobService;
+import org.apel.hermes.config.biz.service.TaskDBConfigureService;
 import org.apel.hermes.config.biz.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,9 @@ public class JobServiceImpl extends AbstractBizCommonService<Job, String> implem
 	
 	@Autowired
 	private JobDBConfigureService jobDBConfigureService;
+	
+	@Autowired
+	private TaskDBConfigureService taskDBConfigureService;
 	
 	
 	@Autowired
@@ -112,6 +117,10 @@ public class JobServiceImpl extends AbstractBizCommonService<Job, String> implem
 	public void deleteById(String... ids){
 		for(String id:ids){
 			jobDBConfigureService.deleteByJobId(id);
+			List<Task> taskList = taskService.findByJobId(id);
+			for(Task task:taskList){
+				taskDBConfigureService.deleteByTaskId(task.getId());
+			}
 			taskService.deleteByJobId(id);
 			super.deleteById(id);
 		}

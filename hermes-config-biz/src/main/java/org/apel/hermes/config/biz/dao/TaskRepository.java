@@ -9,25 +9,22 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface TaskRepository extends CommonRepository<Task, String>{
 
-	@Query
-	@Modifying
-	void deleteByJobIdAndDbOutputId(String jobId, String id);
-	@Query
-	@Modifying
-	void deleteByJobIdAndDbInputId(String jobId, String id);
 	
 	Task findByJobIdAndTaskKey(String id, String key);
 	
 	
 	List<Task> findAllByJobJobKey(String jobBizId);
 	
-	List<Task> findAllByJobJobKeyAndTaskKeyAndDbInputIsNotNull(String jobKey, String taskKey);
+	//List<Task> findAllByJobJobKeyAndTaskKeyAndDbInputIsNotNull(String jobKey, String taskKey);
 	
-	List<Task> findAllByJobJobKeyAndTaskKeyAndDbOutputIsNotNull(String jobBizId, String taskBizId);
+//	List<Task> findAllByJobJobKeyAndTaskKeyAndDbOutputIsNotNull(String jobBizId, String taskBizId);
 	
 	
 	@Query
 	@Modifying
 	void deleteByJobId(String id);
+
+
+	List<Task> findByJobId(String jobId);
 
 }
