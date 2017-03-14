@@ -112,9 +112,7 @@ public class JobServiceImpl extends AbstractBizCommonService<Job, String> implem
 	public void deleteById(String... ids){
 		for(String id:ids){
 			jobDBConfigureService.deleteByJobId(id);
-			
 			taskService.deleteByJobId(id);
-			
 			super.deleteById(id);
 		}
 	}

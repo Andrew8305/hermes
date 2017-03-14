@@ -116,11 +116,11 @@ $(function(){
 			},
 			dbDel:function($index,oper){
 				var jobDbId = "";
-				if(undefined!=this.jobDBConfigureIn[$index] && undefined!=this.jobDBConfigureIn[$index].jobdbId &&
+				if(oper=="in" && undefined!=this.jobDBConfigureIn[$index] && undefined!=this.jobDBConfigureIn[$index].jobdbId &&
 						this.jobDBConfigureIn[$index].jobdbId && this.jobDBConfigureIn[$index].jobdbId!=""){
 					jobDbId = this.jobDBConfigureIn[$index].jobdbId;
 				}
-				if(undefined!=this.jobDBConfigureOut[$index] && undefined!=this.jobDBConfigureOut[$index].jobdbId &&
+				if(oper=="out" && undefined!=this.jobDBConfigureOut[$index] && undefined!=this.jobDBConfigureOut[$index].jobdbId &&
 						this.jobDBConfigureOut[$index].jobdbId && this.jobDBConfigureOut[$index].jobdbId!=""){
 					jobDbId = this.jobDBConfigureOut[$index].jobdbId;
 				}
@@ -130,21 +130,16 @@ $(function(){
 					this.jobDBConfigureOut.splice($index,1);
 				}
 				if(jobDbId!=""){
-					this.$confirm('此操作将永久删除数据数据源所对应的任务, 是否继续?', '提示', {
-				          confirmButtonText: '确定',
-				          cancelButtonText: '取消',
-				          type: 'warning'
-				        }).then(function(){
-				        	PlatformUI.ajax({
-								url: contextPath + "/jobDBConfigure/"+jobDbId,
-								type: "post",
-								data: {_method:"delete"},
-								message:PlatformUI.message,
-								afterOperation: function(){
-									PlatformUI.refreshGrid(grid, {sortname:"createDate",sortorder:"desc"});
-								}
-							});
-				        });
+		        	PlatformUI.ajax({
+						url: contextPath + "/jobDBConfigure/"+jobDbId,
+						type: "post",
+						data: {_method:"delete"},
+						message:PlatformUI.message,
+						afterOperation: function(){
+							PlatformUI.refreshGrid(grid, {sortname:"createDate",sortorder:"desc"});
+						}
+					});
+				       
 				}
 			},
 			refreshPage: function(){//刷新
@@ -174,7 +169,7 @@ $(function(){
 					afterOperation: function(data, textStatus,jqXHR){
 						delete data.createDate;
 						context.form = $.extend(context.form, data);
-						editloadDBConfig(ids[0]);
+						editloadDBConfig();
 						loadDBConfig();
 						
 						
@@ -355,7 +350,7 @@ $(function(){
 					PlatformUI.message({message: "选择一条要编辑的数据!", type: "warning"});
 					return;
 				}
-				editloadDBConfig(ids[0]);
+				editloadDBConfig();
 				var context = this;
 				this.taskDialogFormVisible = true;
 				vue.jobId = ids[0];
@@ -377,18 +372,25 @@ $(function(){
         		this.$refs['taskForm'].validate(function(valid){
         			if (valid) {
         				var data = $.extend({}, context.taskForm);
+        				
+        				
+        				
         				//验证是否有数据源
         				var actionUrl = contextPath + "/task";
         				if(context.formEdit){
         					actionUrl = contextPath + "/task/update";
 				            data.id = data.id;
+        				}else{
+        					if(data.dbInput==null || data.dbOutput==null){
+        						PlatformUI.message({message: "输入源和输出源必选项!", type: "warning"});
+        						return;
+        					}
+        					
+        					
         				}
         				var job = {};
         				job.id = vue.jobId;
         				data.job = job;
-        				
-        				debugger;
-        				
         				PlatformUI.ajax({
         		 			headers: {
         		 		        'Accept': 'application/json', 
@@ -400,6 +402,8 @@ $(function(){
         					afterOperation: function(data){
         						context.taskToolBarForm.value = "";
 			            		context.taskToolBarForm.condition = "";
+			            		
+			            		
 			            		context.formEdit = false;
 			            		PlatformUI.refreshGrid(taskGrid, {
 			            			sortname:"createDate",sortorder:"desc",
@@ -407,8 +411,11 @@ $(function(){
 			            		});
         					}
         		 		});
-						context.$refs['taskForm'].resetFields();
-			        } else {
+						//context.$refs['taskForm'].resetFields();
+        				vue.taskResetForm();
+        				var ids = grid.jqGrid ('getGridParam', 'selarrrow');
+        				editloadDBConfig();
+        			} else {
 			            PlatformUI.message({message:"表单验证失败", type:"error"});
 			            return false;
 			        }
@@ -416,7 +423,7 @@ $(function(){
 		    	
 		    },
 		    taskResetForm:function(){
-		    	this.taskDialogFormVisible = false;
+		    	//this.taskDialogFormVisible = false;
 				this.$refs['taskForm'].resetFields();
 				this.jobDBConfigureIn=[];
 				this.jobDBConfigureOut=[];
@@ -534,7 +541,13 @@ function loadDBConfig(){
 }
 
 
-function editloadDBConfig(id){
+function editloadDBConfig(){
+	
+	var ids = grid.jqGrid ('getGridParam', 'selarrrow');
+	var id = ids[0];
+	vue.jobDBConfigureIn = [];
+	vue.jobDBConfigureOut=[];
+	
 	PlatformUI.ajax({
 		url: contextPath + "/jobDBConfigure/"+id,
 		afterOperation: function(data, textStatus,jqXHR){

@@ -16,17 +16,13 @@ public interface TaskRepository extends CommonRepository<Task, String>{
 	@Modifying
 	void deleteByJobIdAndDbInputId(String jobId, String id);
 	
-	@Query
 	Task findByJobIdAndTaskKey(String id, String key);
 	
 	
-	@Query
 	List<Task> findAllByJobJobKey(String jobBizId);
 	
-	@Query
 	List<Task> findAllByJobJobKeyAndTaskKeyAndDbInputIsNotNull(String jobKey, String taskKey);
 	
-	@Query
 	List<Task> findAllByJobJobKeyAndTaskKeyAndDbOutputIsNotNull(String jobBizId, String taskBizId);
 	
 	
