@@ -15,15 +15,8 @@
            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
            http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
            http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+           
 	<context:component-scan base-package="org.apel.hermes.config.provider"/>
-	
-  	<dubbo:annotation  />
-	 <!-- 提供方应用信息，用于计算依赖关系 -->
-    <dubbo:application name="platform-hermes-config"  />
- 
-    <!-- 使用multicast广播注册中心暴露服务地址 -->
- 	<dubbo:registry protocol="zookeeper" address="${zookeeper.address}" />
- 	
-    <!-- 用dubbo协议在20880端口暴露服务 -->
-	<dubbo:protocol name="dubbo" port="${config.dubbo.port}" />
+ 	<dubbo:registry protocol="zookeeper" address="${dubbo.zookeeper-address}" />
+	<dubbo:protocol name="dubbo" port="${dubbo.port}" />
 </beans>

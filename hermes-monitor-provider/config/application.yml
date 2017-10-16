@@ -1,0 +1,13 @@
+monitor: 
+  port: 9797
+
+dubbo: 
+  zookeeper-address: localhost:2181
+  port: 20990
+  application:
+    name: hermes-monitor
+    
+
+spring:
+  main:
+    web-environment: false

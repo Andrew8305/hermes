@@ -1,0 +1,14 @@
+dubbo: 
+  zookeeper-address: localhost:2181
+  application:
+    name: etl
+    
+title: etl
+
+server:
+  port: 8686
+  context-path: /etl
+
+appId: etl
+cas_server_url: http://localhost:8080/cas
+static_service_url: http://192.168.0.65:9898

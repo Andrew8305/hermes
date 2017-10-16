@@ -16,12 +16,7 @@
            http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
 	
 	<context:component-scan base-package="org.apel.hermes.config.web" />
-	<dubbo:annotation />
-	<dubbo:application name="etl"  />
-	<dubbo:registry protocol="zookeeper" address="${zookeeper.address}" />
-	
-
-	
+	<dubbo:registry protocol="zookeeper" address="${dubbo.zookeeper-address}" />
 	<task:annotation-driven />  
 	
 </beans>

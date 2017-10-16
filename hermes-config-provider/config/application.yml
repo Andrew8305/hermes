@@ -1,0 +1,10 @@
+dubbo: 
+  zookeeper-address: localhost:2181
+  port: 20885
+  application:
+    name: platform-hermes-config
+    
+
+spring:
+  main:
+    web-environment: false
