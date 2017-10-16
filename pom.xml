@@ -13,6 +13,7 @@
 	
 	<properties>
 		<gaia.version>1.0.1-SNAPSHOT</gaia.version>
+		<hades.version>1.0.2-SNAPSHOT</hades.version>
 	</properties>
 	
 	<description>
