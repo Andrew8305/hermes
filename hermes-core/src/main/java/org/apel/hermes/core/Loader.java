@@ -17,6 +17,6 @@ import org.apel.hermes.core.resource.ETLResource;
  */
 public interface Loader  {
 	
-	StepLogCollector load(List<Map<String, Object>> newData, ETLResource outputETLResource, ETLOptional optional);
+	StepLogCollector load(List<Map<String, Object>> newData, ETLResource outputETLResource, ETLOptional optional, String runtimeVersionId);
 	
 }

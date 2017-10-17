@@ -11,6 +11,6 @@ public interface TablePageable {
 	
 	String getMainSql();
 	
-	int getPageSize();
+	int getRowsPerPage();
 	
 }

@@ -16,7 +16,7 @@ public interface ETLStep extends ETLContextSetting{
 	 * @param inputETLResource 输入源
 	 * @param outputETLResource 输出源
 	 */
-	void doStep(ETLResource inputETLResource, ETLResource outputETLResource, StepLogCollector stepLogCollector);
+	void doStep(ETLResource inputETLResource, ETLResource outputETLResource, StepLogCollector stepLogCollector, String runtimeVersionId);
 	
 	/**
 	 * step在task当中顺序

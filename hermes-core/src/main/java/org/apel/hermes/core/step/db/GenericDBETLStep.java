@@ -28,7 +28,7 @@ public abstract class GenericDBETLStep extends DBETLStep implements Extracter, C
 	
 	@Override
 	public void doStep(DBETLResource inputResource,
-			DBETLResource outputResource, StepLogCollector stepLogCollector) {
+			DBETLResource outputResource, StepLogCollector stepLogCollector, String runtimeVersionId) {
 		//监听器回调点
 		ETLListenerUtil.stepBeforeExtract(stepListener, inputResource, outputResource, dbOptional);
 		
@@ -44,7 +44,7 @@ public abstract class GenericDBETLStep extends DBETLStep implements Extracter, C
 			//监听器回调点
 			ETLListenerUtil.stepBeforeConvert(stepListener, inputResource, outputResource, dbOptional);
 			
-			Map<String, Object> newSingleData = convert(rawSingleData, inputResource, outputResource, dbOptional);
+			Map<String, Object> newSingleData = convert(rawSingleData, inputResource, outputResource, dbOptional, runtimeVersionId);
 			
 			//监听器回调点
 			ETLListenerUtil.stepAfterConvert(stepListener, inputResource, outputResource, dbOptional);
@@ -56,7 +56,7 @@ public abstract class GenericDBETLStep extends DBETLStep implements Extracter, C
 		//监听器回调点
 		ETLListenerUtil.stepBeforeLoad(stepListener, inputResource, outputResource, dbOptional, newData);
 		
-		load(newData, outputResource, dbOptional);
+		load(newData, outputResource, dbOptional, runtimeVersionId);
 		
 		stepLogCollector.addLog("加载影响了" + newData.size() + "条数据");
 		

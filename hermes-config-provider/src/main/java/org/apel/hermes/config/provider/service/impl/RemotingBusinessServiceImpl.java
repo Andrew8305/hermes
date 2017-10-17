@@ -1,5 +1,6 @@
 package org.apel.hermes.config.provider.service.impl;
 
+import org.apel.dubbo.starter.config.SpringService;
 import org.apel.gaia.util.BeanUtils;
 import org.apel.hermes.config.api.RemotingBusinessService;
 import org.apel.hermes.config.api.domain.JobLogCollector;
@@ -15,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.alibaba.dubbo.config.annotation.Service;
 
 @Service(timeout=8000)
-@org.springframework.stereotype.Service
+@SpringService
 public class RemotingBusinessServiceImpl implements RemotingBusinessService {
 	
 	@Autowired

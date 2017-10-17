@@ -2,12 +2,12 @@ package org.apel.hermes.config.provider.service.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.apel.dubbo.starter.config.SpringService;
 import org.apel.hermes.common.consist.ETLResourceConsist;
 import org.apel.hermes.config.api.RemotingGenericService;
 import org.apel.hermes.config.api.domain.JobConfig;
@@ -23,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.alibaba.dubbo.config.annotation.Service;
 
 @Service(timeout=8000)
-@org.springframework.stereotype.Service
+@SpringService
 public class RemotingGenericServiceImpl implements RemotingGenericService{
 
 	@Autowired

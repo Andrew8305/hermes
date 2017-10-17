@@ -1,0 +1,7 @@
+#minIdle
+#maxActive
+
+monitor: 
+  server:
+    ip: localhost
+    port: 9797

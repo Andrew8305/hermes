@@ -22,7 +22,7 @@ public class PagingThreadPool<T> {
 	
 	public PagingThreadPool(int threadSize){
 		//当分页后的总页数大于阈值时，以最大10个线程创建线程池，反之则创建更小的线程池
-		if(threadSize > DEFAULT_THREAD_SIZE){
+		if(threadSize > DEFAULT_THREAD_SIZE || threadSize <= 0){
 			this.threadSize = DEFAULT_THREAD_SIZE;
 		}else{
 			this.threadSize = threadSize;

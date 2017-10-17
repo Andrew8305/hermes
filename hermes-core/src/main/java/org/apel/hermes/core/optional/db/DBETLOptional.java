@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apel.gaia.commons.pager.Condition;
 import org.apel.hermes.core.common.DataSourceFetureDesc;
 import org.apel.hermes.core.common.UpdateMode;
+import org.apel.hermes.core.enums.InputPKType;
 import org.apel.hermes.core.listener.ConvertHandler;
 import org.apel.hermes.core.optional.ETLOptional;
 
@@ -19,6 +20,38 @@ public interface DBETLOptional extends ETLOptional{
 	boolean multiThreadPaging();
 	
 	DBETLOptional multiThreadPaging(boolean multiThreadPaging);
+	
+	boolean checkVersion();
+	
+	DBETLOptional checkVersion(boolean checkVersion);
+	
+	String versionCheckField();
+	
+	DBETLOptional versionCheckField(String versionCheckField);
+	
+	String noneClause();
+	
+	DBETLOptional noneClause(String noneClause);
+	
+	InputPKType inputPKType();
+	
+	DBETLOptional inputPKType(InputPKType inputPKType);
+	
+	String idFilterClause();
+	
+	DBETLOptional idFilterClause(String idFilterClause);
+	
+	int pageThreadPoolSize();
+	
+	DBETLOptional pageThreadPoolSize(int pageThreadPoolSize);
+	
+	String pagingSearchIdSql();
+	
+	DBETLOptional pagingSearchIdSql(String pagingSearchIdSql);
+	
+	int rowsPerPage();
+	
+	DBETLOptional rowsPerPage(int rowsPerPage);
 	
 	boolean isPaging();
 	
@@ -64,7 +97,6 @@ public interface DBETLOptional extends ETLOptional{
 		
 	String recursionField();
 		
-		
 	DBETLOptional recursionFieldValue(Object recursionFieldValue);
 		
 	Object recursionFieldValue();
@@ -102,4 +134,6 @@ public interface DBETLOptional extends ETLOptional{
 	DBETLOptional convertHandler(ConvertHandler convertHandler);
 	
 	ConvertHandler convertHandler();
+
+	
 }

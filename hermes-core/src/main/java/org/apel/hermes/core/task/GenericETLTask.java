@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import org.apel.hermes.config.api.domain.JobLogCollector;
 import org.apel.hermes.core.context.ETLContext;
@@ -19,6 +20,9 @@ import org.apel.hermes.core.util.ThreadUtil;
  *
  */
 public abstract class GenericETLTask implements ETLTask{
+	
+	
+	protected static final int DEFAULT_SEMAPHORE_PERMITS = 10;
 	
 	protected ETLContext context;
 	
@@ -117,13 +121,26 @@ public abstract class GenericETLTask implements ETLTask{
 	public List<ETLStep> getAllSteps() {
 		return allOrderedSteps;
 	}
+	
+	/**
+	 * job的线程信号量限制，默认大小是10个，可以重写以覆盖默认值
+	 * @return
+	 */
+	protected int semaphorePermits(){
+		return DEFAULT_SEMAPHORE_PERMITS;
+	}
 
 	@Override
-	public void start(JobLogCollector jobLogCollector) {
+	public void start(JobLogCollector jobLogCollector, String runtimeVersionId) {
+		int semaphorePermits = semaphorePermits();
+		if(semaphorePermits <= 0){
+			semaphorePermits = DEFAULT_SEMAPHORE_PERMITS;
+		}
+		Semaphore semaphore = new Semaphore(semaphorePermits);
 		List<Thread> stepThreads = new ArrayList<>();
 		for (ETLResource inputETLResource : inputETLResources) {
 			for (ETLResource outputETLResource : outputETLResources) {
-				Thread t = new Thread(new SingleResourceTaskThread(id(), inputETLResource, outputETLResource, allOrderedSteps, this.taskListener, jobLogCollector));
+				Thread t = new Thread(new SingleResourceTaskThread(id(), inputETLResource, outputETLResource, allOrderedSteps, this.taskListener, jobLogCollector, semaphore, runtimeVersionId));
 				stepThreads.add(t);
 				t.start();
 			}

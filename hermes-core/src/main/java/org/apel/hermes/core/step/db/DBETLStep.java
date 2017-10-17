@@ -28,11 +28,11 @@ public abstract class DBETLStep implements ETLStep{
 	
 	@Override
 	public void doStep(ETLResource inputETLResource,
-			ETLResource outputETLResource, StepLogCollector stepLogCollector) {
+			ETLResource outputETLResource, StepLogCollector stepLogCollector, String runtimeVersionId) {
 		//监听器回调点
 		ETLListenerUtil.stepOnStart(stepListener, inputETLResource, outputETLResource);
 		
-		doStep((DBETLResource)inputETLResource, (DBETLResource)outputETLResource, stepLogCollector);
+		doStep((DBETLResource)inputETLResource, (DBETLResource)outputETLResource, stepLogCollector, runtimeVersionId);
 		
 		//监听器回调点
 		ETLListenerUtil.stepOnEnd(stepListener, inputETLResource, outputETLResource);
@@ -48,7 +48,7 @@ public abstract class DBETLStep implements ETLStep{
 		this.order = order;
 	}
 
-	public abstract void doStep(DBETLResource inputResource, DBETLResource outputResource, StepLogCollector stepLogCollector);
+	public abstract void doStep(DBETLResource inputResource, DBETLResource outputResource, StepLogCollector stepLogCollector, String runtimeVersionId);
 	
 	public StepListener getStepListener(){
 		return this.stepListener;

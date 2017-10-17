@@ -16,6 +16,6 @@ import org.apel.hermes.core.resource.ETLResource;
 public interface Converter {
 
 	
-	Map<String, Object> convert(Map<String, Object> rawRow, ETLResource inputETLResource, ETLResource outputETLResource, ETLOptional optional);
+	Map<String, Object> convert(Map<String, Object> rawRow, ETLResource inputETLResource, ETLResource outputETLResource, ETLOptional optional, String runtimeVersionId);
 	
 }

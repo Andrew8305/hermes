@@ -1,5 +1,6 @@
 package org.apel.hermes.core.factory.db;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -15,7 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import com.mchange.v2.c3p0.ComboPooledDataSource;
+import com.alibaba.druid.pool.DruidDataSource;
 
 /**
  * 数据库数据源创建泛型工厂，将在初始化器当中使用工厂创建对应的源对象
@@ -26,28 +27,10 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 @Component
 public class DBETLResourceFactory implements ETLResourceFactory<DBETLResource>{
 
-	@Value("${maxIdleTime:25200}")
-	private int maxIdleTime;
-	@Value("${acquireIncrement:10}")
-	private int acquireIncrement;
-	@Value("${initialPoolSize:10}")
-	private int initialPoolSize;
-	@Value("${maxPoolSize:200}")
-	private int maxPoolSize;
-	@Value("${minPoolSize:10}")
-	private int minPoolSize;
-	@Value("${maxStatements:200}")
-	private int maxStatements;
-	@Value("${idleConnectionTestPeriod:1800}")
-	private int idleConnectionTestPeriod;
-	@Value("${checkoutTimeout:1000}")
-	private int checkoutTimeout;
-	@Value("${preferredTestQuery:select 'X' from dual}")
-	private String preferredTestQuery;
-	@Value("${testConnectionOnCheckout:false}")
-	private boolean testConnectionOnCheckout;
-	@Value("${testConnectionOnCheckin:false}")
-	private boolean testConnectionOnCheckin;
+	@Value("${minIdle:0}")
+	private int minIdle;
+	@Value("${maxActive:200}")
+	private int maxActive;
 	
 	private static Logger LOG = Logger.getLogger(DBETLResourceFactory.class); 
 	
@@ -61,10 +44,10 @@ public class DBETLResourceFactory implements ETLResourceFactory<DBETLResource>{
 			resource.name(params.get(ETLResourceConsist.NAME).toString());
 			//首先从数据库缓存当中去获取数据源，如果拿到了直接使用，无需再进行构建，如果没有拿到，再进行创建
 			DataSource ds = DataBaseCacher.getInstance().get(params.get(ETLResourceConsist.ID).toString());
-			if(ds == null){//缓存当中没有数据源，创建c3p0数据源
-				ds = createC3p0DataSource(params);
-				try {
-					ds.getConnection().createStatement().executeQuery("select 'x' from dual");
+			if(ds == null){//缓存当中没有数据源，创建数据源
+				ds = createDataSource(params);
+				try (Connection conn = ds.getConnection();){
+					conn.createStatement().executeQuery("select 'x' from dual");
 				} catch (SQLException e) {
 					LOG.warn("(标识-" +  params.get(ETLResourceConsist.ID) + ", 名称-" + params.get(ETLResourceConsist.NAME) + ")的数据源连接失败，装配作业失败");
 				}
@@ -82,23 +65,14 @@ public class DBETLResourceFactory implements ETLResourceFactory<DBETLResource>{
 	/**
 	 * 创建c3p0数据库连接池
 	 */
-	private ComboPooledDataSource createC3p0DataSource(
+	private DataSource createDataSource(
 			Map<String, Object> params) {
-		ComboPooledDataSource dataSource = new ComboPooledDataSource();
-		dataSource.setJdbcUrl(params.get(DBParam.JDBC_URL).toString());
-		dataSource.setUser(params.get(DBParam.JDBC_USER_NAME).toString());
+		DruidDataSource dataSource = new DruidDataSource();
+		dataSource.setUrl(params.get(DBParam.JDBC_URL).toString());
+		dataSource.setUsername(params.get(DBParam.JDBC_USER_NAME).toString());
 		dataSource.setPassword(params.get(DBParam.JDBC_PASSWORD).toString());
-		dataSource.setMaxIdleTime(maxIdleTime);
-		dataSource.setAcquireIncrement(acquireIncrement);
-		dataSource.setInitialPoolSize(initialPoolSize);
-		dataSource.setMaxPoolSize(maxPoolSize);
-		dataSource.setMinPoolSize(minPoolSize);
-		dataSource.setIdleConnectionTestPeriod(idleConnectionTestPeriod);
-		dataSource.setCheckoutTimeout(checkoutTimeout);
-		dataSource.setPreferredTestQuery(preferredTestQuery);
-		dataSource.setTestConnectionOnCheckin(testConnectionOnCheckin);
-		dataSource.setTestConnectionOnCheckout(testConnectionOnCheckout);
-		dataSource.setMaxStatements(maxStatements);
+		dataSource.setMinIdle(minIdle);
+		dataSource.setMaxActive(maxActive);
 		return dataSource;
 	}
 

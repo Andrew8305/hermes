@@ -54,7 +54,7 @@ public class SmartDBETLStep extends MultiFunctionDBETLStep implements StepListen
 	@Override
 	public Map<String, Object> convert(Map<String, Object> rawRow,
 			ETLResource inputETLResource,
-			ETLResource outputETLResource, ETLOptional optional) {
+			ETLResource outputETLResource, ETLOptional optional, String runtimeVersionId) {
 		//排除oracle的rownum字段
 		rawRow.remove(ORACLE_ROW_NUM_FIELD.toUpperCase());
 		rawRow.remove(ORACLE_ROW_NUM_FIELD.toLowerCase());
@@ -77,6 +77,10 @@ public class SmartDBETLStep extends MultiFunctionDBETLStep implements StepListen
 				rawRow.put(dbOptional.dataSourceFetureDesc().getName(), inputETLResource.name());
 			}
 		}
+		//如果要进行数据的版本控制，则添加版本字段
+		if (this.optional().checkVersion()){
+			rawRow.put(getVersionCheckField(), runtimeVersionId);
+		}
 		Map<String, Object> resultRow = new HashMap<>();
 		if(dbOptional.contrast().size() != 0){//转换输入源和输出源的字段信息
 			for (String key : rawRow.keySet()) {
@@ -98,7 +102,7 @@ public class SmartDBETLStep extends MultiFunctionDBETLStep implements StepListen
 
 	@Override
 	public StepLogCollector load(List<Map<String, Object>> newData,
-			ETLResource outputETLResource, ETLOptional optional) {
+			ETLResource outputETLResource, ETLOptional optional, String runtimeVersionId) {
 		StepLogCollector stepLogCollector = StepLogCollector.create();
 		DBETLResource outputResource = (DBETLResource)outputETLResource;
 		//如果在目标表中没有出现之前获取的数据时，要将之排除

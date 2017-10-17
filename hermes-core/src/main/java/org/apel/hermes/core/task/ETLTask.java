@@ -45,7 +45,7 @@ public interface ETLTask extends ETLContextSetting{
 	/**
 	 * 开启一个任务
 	 */
-	void start(JobLogCollector jobLogCollector);
+	void start(JobLogCollector jobLogCollector, String runtimeVersionId);
 	
 	void setInputETLResources(List<ETLResource> inputResources);
 	

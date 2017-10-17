@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.apel.gaia.util.DateUtil;
 import org.apel.hermes.config.api.domain.JobLogCollector;
 import org.apel.hermes.core.context.ETLContext;
 import org.apel.hermes.core.listener.JobListener;
@@ -68,9 +69,11 @@ public abstract class GenericETLJob implements ETLJob {
 		Long startTime = System.currentTimeMillis();
 		//监听器回调点
 		ETLListenerUtil.jobOnStart(this.jobListener);
+		//产生运行时版本号
+		final String runtimeVersionId = DateUtil.dateToStr(new Date(), DateUtil.YYYYMMDDHHMMSS + "SSS");
 		if(allTasks.size() == 1){//只有一个元素不需要为任务开启多线程
 			for (ETLTask etlTask : allTasks.values()) {
-				etlTask.start(jobLogCollector);
+				etlTask.start(jobLogCollector, runtimeVersionId);
 			}
 		}else{
 			List<Thread> threads = new ArrayList<>();
@@ -78,7 +81,7 @@ public abstract class GenericETLJob implements ETLJob {
 				Thread t = new Thread(){
 					@Override
 					public void run() {
-						etlTask.start(jobLogCollector);
+						etlTask.start(jobLogCollector, runtimeVersionId);
 					}
 				};
 				threads.add(t);
@@ -168,6 +171,5 @@ public abstract class GenericETLJob implements ETLJob {
 	public Map<String, ETLTask> getAllTasks() {
 		return this.allTasks;
 	}
-	
 	
 }

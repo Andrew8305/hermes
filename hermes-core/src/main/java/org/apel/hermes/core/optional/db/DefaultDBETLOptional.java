@@ -10,6 +10,7 @@ import org.apel.gaia.commons.pager.Operation;
 import org.apel.gaia.commons.pager.RelateType;
 import org.apel.hermes.core.common.DataSourceFetureDesc;
 import org.apel.hermes.core.common.UpdateMode;
+import org.apel.hermes.core.enums.InputPKType;
 import org.apel.hermes.core.listener.ConvertHandler;
 
 /**
@@ -18,6 +19,48 @@ import org.apel.hermes.core.listener.ConvertHandler;
  *
  */
 public class DefaultDBETLOptional implements DBETLOptional {
+	
+	
+	/**
+	 * 是否进行数据版本检查，如果开启，每一次同步数据都会生成数据的新版本号，并且清楚掉以前老的版本号
+	 * 此操作用于清除掉目标数据库中被源数据库删除的脏数据
+	 */
+	private boolean checkVersion;
+	
+	/**
+	 * 数据版本检查的字段
+	 */
+	private String versionCheckField;
+	
+	/**
+	 * 输入源查询的非条件，用于空查询，默认是where 1=2
+	 */
+	private String noneClause;
+	
+	/**
+	 * 输入源表id的数据类型，默认是String
+	 */
+	private InputPKType inputPKType = InputPKType.STRING;
+	
+	/**
+	 * 增强分页语句中的id过滤条件
+	 */
+	private String idFilterClause;
+	
+	/**
+	 * 分页查找id的sql语句，默认是select inputPk from fromTable
+	 */
+	private String pagingSearchIdSql;
+	
+	/**
+	 * 分页的线程池大小，默认10个线程
+	 */
+	private int pageThreadPoolSize;
+	
+	/**
+	 * 分页时每查询的记录数，默认200一页
+	 */
+	private int rowsPerPage;
 	
 	/**
 	 * 是否进行分页
@@ -368,7 +411,94 @@ public class DefaultDBETLOptional implements DBETLOptional {
 	public ConvertHandler convertHandler() {
 		return this.convertHandler;
 	}
+
+	@Override
+	public int rowsPerPage() {
+		return this.rowsPerPage;
+	}
+
+	@Override
+	public DBETLOptional rowsPerPage(int rowsPerPage) {
+		this.rowsPerPage = rowsPerPage;
+		return this;
+	}
+
+	@Override
+	public int pageThreadPoolSize() {
+		return this.pageThreadPoolSize;
+	}
+
+	@Override
+	public DBETLOptional pageThreadPoolSize(int pageThreadPoolSize) {
+		this.pageThreadPoolSize = pageThreadPoolSize;
+		return this;
+	}
+
+	@Override
+	public String pagingSearchIdSql() {
+		return this.pagingSearchIdSql;
+	}
+
+	@Override
+	public DBETLOptional pagingSearchIdSql(String pagingSearchIdSql) {
+		this.pagingSearchIdSql = pagingSearchIdSql;
+		return this;
+	}
+
+	@Override
+	public String idFilterClause() {
+		return this.idFilterClause;
+	}
+
+	@Override
+	public DBETLOptional idFilterClause(String idFilterClause) {
+		this.idFilterClause = idFilterClause;
+		return this;
+	}
+
+	@Override
+	public InputPKType inputPKType() {
+		return this.inputPKType;
+	}
+
+	@Override
+	public DBETLOptional inputPKType(InputPKType inputPKType) {
+		this.inputPKType = inputPKType;
+		return this;
+	}
+
+	@Override
+	public String noneClause() {
+		return this.noneClause;
+	}
 	
+	@Override
+	public DBETLOptional noneClause(String noneClause) {
+		this.noneClause = noneClause;
+		return this;
+	}
+
+	@Override
+	public boolean checkVersion() {
+		return this.checkVersion;
+	}
+
+	@Override
+	public DBETLOptional checkVersion(boolean checkVersion) {
+		this.checkVersion = checkVersion;
+		return this;
+	}
+
+	@Override
+	public String versionCheckField() {
+		return this.versionCheckField;
+	}
+
+	@Override
+	public DBETLOptional versionCheckField(String versionCheckField) {
+		this.versionCheckField = versionCheckField;
+		return this;
+	}
 	
 	
 
